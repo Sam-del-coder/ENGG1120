@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Algebra - Study Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-color: #202020;
+            --secondary-color: #0085FF;
+            --accent-color: #FFCC5D;
+            --definition-bg: #E8F4FD;
+            --definition-border: #0085FF;
+            --question-bg: #FFF9E6;
+            --question-border: #FFCC5D;
+            --solution-bg: #F0F9FF;
+            --solution-border: #60A5FA;
+            --proof-bg: #F3E8FF;
+            --proof-border: #A78BFA;
+        }
+
+        /* Core Body & Container */
+        body { font-family: 'Poppins', sans-serif !important; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important; color: var(--primary-color) !important; line-height: 1.6 !important; padding: 20px !important; }
+        .container, main.max-w-5xl, main.max-w-4xl { max-width: 1200px !important; margin: 0 auto !important; background: white !important; border-radius: 16px !important; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important; overflow: visible !important; padding: 40px !important; }
+        
+        /* Headers */
+        .header, header.bg-indigo-900, header.bg-blue-700 { background: linear-gradient(135deg, var(--primary-color) 0%, #4D4D4D 100%) !important; color: white !important; padding: 40px !important; border-radius: 16px 16px 0 0 !important; text-align: center !important; margin: -40px -40px 40px -40px !important; box-shadow: none !important; border: none !important; }
+        .header h1, header h1 { font-size: 2.5rem !important; font-weight: 700 !important; margin: 0 0 10px 0 !important; color: white !important; }
+        .header p, header p { font-size: 1.1rem !important; opacity: 0.9 !important; margin: 0 !important; color: white !important; font-style: normal !important; }
+        
+        /* Table of Contents */
+        .toc { background: #F9FAFB !important; border: 2px solid var(--secondary-color) !important; border-radius: 12px !important; padding: 30px !important; margin-bottom: 40px !important; box-shadow: none !important; }
+        .toc h2 { color: var(--secondary-color) !important; font-size: 1.8rem !important; margin-bottom: 20px !important; font-weight: 600 !important; border: none !important; padding: 0 !important; }
+        .toc ul { list-style: none !important; padding: 0 !important; }
+        .toc li { margin: 12px 0 !important; padding: 0 !important; }
+        .toc li:before { content: "" !important; display: none !important; }
+        .toc a { color: var(--primary-color) !important; text-decoration: none !important; font-size: 1.1rem !important; font-weight: 500 !important; transition: all 0.3s ease !important; display: block !important; padding: 10px 15px !important; border-radius: 8px !important; }
+        .toc a:hover { background: var(--secondary-color) !important; color: white !important; transform: translateX(10px) !important; }
+        
+        /* Main Sections */
+        .concept-section, .section, .concept-card { margin: 50px 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; background: transparent !important; }
+        .section-title, .concept-card h2 { color: var(--primary-color) !important; font-size: 2rem !important; font-weight: 700 !important; margin-bottom: 25px !important; padding-bottom: 15px !important; border-bottom: 4px solid var(--secondary-color) !important; }
+        
+        /* Content Boxes (Definitions, Theorems, Examples) */
+        .definition-box, .theorem-box, .example, .bg-indigo-50, .bg-blue-50 { background: var(--definition-bg) !important; border: none !important; border-left: 6px solid var(--definition-border) !important; border-radius: 8px !important; padding: 25px !important; margin: 25px 0 !important; box-shadow: 0 4px 6px rgba(0, 133, 255, 0.1) !important; }
+        .definition-box h3, .theorem-box h3, .example h4, .concept-title, .bg-indigo-50 h3 { color: var(--secondary-color) !important; font-size: 1.4rem !important; font-weight: 600 !important; margin-top: 0 !important; margin-bottom: 15px !important; background: none !important; border: none !important; padding: 0 !important; text-decoration: none !important; }
+        .formula { background: white !important; border: 2px dashed var(--secondary-color) !important; border-radius: 8px !important; padding: 15px !important; margin: 15px 0 !important; font-family: 'Courier New', monospace !important; font-size: 1.1rem !important; text-align: center !important; font-weight: 500 !important; overflow-x: auto !important; }
+        
+        /* Wrappers to clean up structural differences */
+        .questions-box, .solutions-box { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+        .questions-box h3, .solutions-box h3 { color: var(--primary-color) !important; font-size: 1.5rem !important; margin-top: 40px !important; margin-bottom: 20px !important; border: none !important; padding: 0 !important; }
+        
+        /* Questions & Solutions Mappings */
+        .question-block, .question-item, .border-b { background: var(--question-bg) !important; border: none !important; border-left: 6px solid var(--question-border) !important; border-radius: 8px !important; padding: 20px !important; margin: 20px 0 !important; box-shadow: 0 4px 6px rgba(255, 204, 93, 0.1) !important; display: block !important; }
+        .question-block h4, .question-number, .font-medium { color: #D97706 !important; font-weight: 600 !important; margin-top: 0 !important; margin-bottom: 12px !important; font-size: 1.2rem !important; display: block !important; border: none !important; }
+        .solution-block, .solution-item, .solution-content, .solution { background: var(--solution-bg) !important; border: none !important; border-left: 6px solid var(--solution-border) !important; border-radius: 8px !important; padding: 20px !important; margin: 15px 0 30px 0 !important; box-shadow: 0 4px 6px rgba(96, 165, 250, 0.1) !important; display: block; }
+        .solution-block.hidden, .solution-item.hidden, .solution-content.hidden, .solution.hidden { display: none !important; }
+        .solution-block h4, .solution-number { color: #2563EB !important; font-weight: 600 !important; margin-top: 0 !important; margin-bottom: 15px !important; font-size: 1.1rem !important; display: block !important; }
+        
+        /* Proofs & Steps */
+        .proof-block, .proof-box { background: var(--proof-bg) !important; border: none !important; border-left: 6px solid var(--proof-border) !important; border-radius: 8px !important; padding: 20px !important; margin: 15px 0 !important; box-shadow: 0 4px 6px rgba(167, 139, 250, 0.1) !important; }
+        .proof-box h3 { color: #9333ea !important; font-weight: 600 !important; margin-bottom: 15px !important; font-size: 1.2rem !important; border: none !important; }
+        .step { margin: 15px 0 !important; padding-left: 20px !important; border-left: 3px solid #CBD5E1 !important; }
+        .step-label, .step-title { font-weight: 600 !important; color: var(--secondary-color) !important; margin-bottom: 8px !important; }
+        .note { background: #FEF3C7 !important; border-left: 4px solid #F59E0B !important; padding: 15px !important; margin: 15px 0 !important; border-radius: 6px !important; font-style: italic !important; }
+        .highlight { background: var(--accent-color) !important; padding: 2px 6px !important; border-radius: 4px !important; font-weight: 600 !important; }
+
+        /* Hide Old Toggles */
+        input[type="checkbox"].show-sol, input[type="checkbox"].show-solution, label[for^="v"], label[for^="s"], label[for^="m"], label[for^="sol"] { display: none !important; }
+    </style>
+    
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                packages: {'[+]': ['ams']}
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var solutions = document.querySelectorAll('.solution-block, .solution-item, .solution-content, .solution');
+            
+            solutions.forEach(function (solution) {
+                solution.classList.add('hidden');
+
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = 'Show Solution';
+                button.style.display = 'inline-block';
+                button.style.margin = '10px 0';
+                button.style.padding = '10px 16px';
+                button.style.border = '2px solid var(--secondary-color)';
+                button.style.borderRadius = '8px';
+                button.style.background = 'white';
+                button.style.color = 'var(--primary-color)';
+                button.style.cursor = 'pointer';
+                button.style.fontWeight = '600';
+                button.style.transition = 'all 0.2s ease';
+
+                button.addEventListener('mouseenter', function () {
+                    button.style.background = 'var(--secondary-color)';
+                    button.style.color = 'white';
+                });
+                button.addEventListener('mouseleave', function () {
+                    if(solution.classList.contains('hidden')) {
+                        button.style.background = 'white';
+                        button.style.color = 'var(--primary-color)';
+                    } else {
+                        button.style.background = 'var(--secondary-color)';
+                        button.style.color = 'white';
+                    }
+                });
+
+                button.addEventListener('click', function () {
+                    var isHidden = solution.classList.toggle('hidden');
+                    button.textContent = isHidden ? 'Show Solution' : 'Hide Solution';
+                    button.style.background = isHidden ? 'white' : 'var(--secondary-color)';
+                    button.style.color = isHidden ? 'var(--primary-color)' : 'white';
+                });
+
+                solution.parentNode.insertBefore(button, solution);
+            });
+        });
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-900 leading-relaxed">
+
+    <header class="bg-indigo-900 text-white py-12 px-4 shadow-lg mb-8">
+        <div class="max-w-5xl mx-auto text-center">
+            <h1 class="text-4xl font-bold mb-2">Linear Algebra Master Guide</h1>
+            <p class="text-indigo-200 text-lg italic">Vector Spaces, Subspaces, and Matrix Spaces (Col, Row, Nul)</p>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 pb-20 space-y-12">
+
+        <section id="vector-spaces">
+            <div class="concept-card bg-white p-8 rounded-lg shadow-md">
+                <h2 class="text-3xl font-bold text-indigo-800 mb-4">1. Vector Spaces & Axioms</h2>
+                <div class="bg-indigo-50 p-6 rounded mb-8 text-sm">
+                    <h3 class="font-bold text-indigo-900 mb-2 underline">Definition & Explanation</h3>
+                    <p>A <strong>Vector Space</strong> $V$ is a set of vectors that is closed under addition ($\mathbf{u}+\mathbf{v} \in V$) and scalar multiplication ($c\mathbf{v} \in V$). It must satisfy 10 axioms, including the existence of a zero vector $\mathbf{0}$, additive inverses $-\mathbf{v}$, and distributive properties such as $c(\mathbf{u}+\mathbf{v}) = c\mathbf{u} + c\mathbf{v}$.</p>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="border-b pb-4">
+                        <p class="font-medium">1. (Calc) If $\mathbf{u} = \langle 1, -2, 4 \rangle$ and $\mathbf{v} = \langle 3, 0, -1 \rangle$, calculate $2\mathbf{u} - \mathbf{v}$.</p>
+                        <input type="checkbox" id="v1" class="hidden show-sol">
+                        <label for="v1" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Scale $\mathbf{u}$: $2\langle 1, -2, 4 \rangle = \langle 2, -4, 8 \rangle$.<br>
+                            2. Subtract $\mathbf{v}$: $\langle 2-3, -4-0, 8-(-1) \rangle = \langle -1, -4, 9 \rangle$.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">2. (Deduct) Is the set of all vectors in $\mathbb{R}^2$ with $y = x^2$ a vector space?</p>
+                        <input type="checkbox" id="v2" class="hidden show-sol">
+                        <label for="v2" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Check closure under scalar multiplication.<br>
+                            2. Let $\mathbf{v} = \langle 1, 1 \rangle$ (since $1 = 1^2$).<br>
+                            3. Multiply by scalar $c=2$: $2\mathbf{v} = \langle 2, 2 \rangle$.<br>
+                            4. Check if $y=x^2$: $2 \neq 2^2$ (which is 4). Not closed, therefore not a vector space.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">3. (Proof) Prove the zero vector $\mathbf{0}$ is unique.</p>
+                        <input type="checkbox" id="v3" class="hidden show-sol">
+                        <label for="v3" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Assume there are two zeros, $\mathbf{0}_1$ and $\mathbf{0}_2$.<br>
+                            2. $\mathbf{0}_1 + \mathbf{0}_2 = \mathbf{0}_1$ (since $\mathbf{0}_2$ is a zero).<br>
+                            3. $\mathbf{0}_2 + \mathbf{0}_1 = \mathbf{0}_2$ (since $\mathbf{0}_1$ is a zero).<br>
+                            4. By commutativity, $\mathbf{0}_1 + \mathbf{0}_2 = \mathbf{0}_2 + \mathbf{0}_1$.<br>
+                            5. Thus, $\mathbf{0}_1 = \mathbf{0}_2$.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">4. (Calc) Find weights $\alpha, \beta$ such that $\langle 5, 2 \rangle = \alpha\langle 1, 1 \rangle + \beta\langle 1, 0 \rangle$.</p>
+                        <input type="checkbox" id="v4" class="hidden show-sol">
+                        <label for="v4" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. System: $\alpha + \beta = 5$ and $\alpha = 2$.<br>
+                            2. Substitute $\alpha=2$ into the first: $2 + \beta = 5 \implies \beta = 3$.<br>
+                            3. Weights: $\alpha=2, \beta=3$.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">5. (Proof) Prove $0\mathbf{v} = \mathbf{0}$ for any vector $\mathbf{v}$.</p>
+                        <input type="checkbox" id="v5" class="hidden show-sol">
+                        <label for="v5" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. $0\mathbf{v} = (0+0)\mathbf{v} = 0\mathbf{v} + 0\mathbf{v}$ (Distributive Axiom).<br>
+                            2. Add inverse $-(0\mathbf{v})$ to both sides.<br>
+                            3. $0\mathbf{v} + (-(0\mathbf{v})) = (0\mathbf{v} + 0\mathbf{v}) + (-(0\mathbf{v}))$.<br>
+                            4. $\mathbf{0} = 0\mathbf{v} + \mathbf{0} = 0\mathbf{v}$.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">6. (Calc) Solve for $x$ if $2\langle x, 3 \rangle + \langle 1, -1 \rangle = \langle 5, 5 \rangle$.</p>
+                        <input type="checkbox" id="v6" class="hidden show-sol">
+                        <label for="v6" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Combine left side: $\langle 2x+1, 6-1 \rangle = \langle 2x+1, 5 \rangle$.<br>
+                            2. Set components equal: $2x+1 = 5$.<br>
+                            3. $2x = 4 \implies x = 2$.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">7. (Deduct) Does the set of all $2 \times 2$ matrices with $\text{det}(A) = 0$ form a vector space?</p>
+                        <input type="checkbox" id="v7" class="hidden show-sol">
+                        <label for="v7" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Check closure under addition.<br>
+                            2. Let $A = \begin{bmatrix} 1 & 0 \\ 0 & 0 \end{bmatrix}$ ($\text{det}=0$) and $B = \begin{bmatrix} 0 & 0 \\ 0 & 1 \end{bmatrix}$ ($\text{det}=0$).<br>
+                            3. $A+B = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$.<br>
+                            4. $\text{det}(A+B) = 1 \neq 0$. Not closed, not a vector space.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">8. (Proof) Prove that $(-1)\mathbf{v} = -\mathbf{v}$.</p>
+                        <input type="checkbox" id="v8" class="hidden show-sol">
+                        <label for="v8" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Consider $\mathbf{v} + (-1)\mathbf{v}$.<br>
+                            2. $\mathbf{v} + (-1)\mathbf{v} = 1\mathbf{v} + (-1)\mathbf{v} = (1 - 1)\mathbf{v} = 0\mathbf{v}$.<br>
+                            3. From Q5, $0\mathbf{v} = \mathbf{0}$.<br>
+                            4. Since $\mathbf{v} + (-1)\mathbf{v} = \mathbf{0}$, $(-1)\mathbf{v}$ satisfies the definition of the additive inverse $-\mathbf{v}$.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">9. (Calc) Simplify the expression $3(\mathbf{u} - 2\mathbf{v}) + 4\mathbf{v}$.</p>
+                        <input type="checkbox" id="v9" class="hidden show-sol">
+                        <label for="v9" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Distribute: $3\mathbf{u} - 6\mathbf{v} + 4\mathbf{v}$.<br>
+                            2. Group $\mathbf{v}$ terms: $3\mathbf{u} + (-6+4)\mathbf{v} = 3\mathbf{u} - 2\mathbf{v}$.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">10. (Deduct) Is the set of all integers $\mathbb{Z}$ a vector space over the real numbers $\mathbb{R}$?</p>
+                        <input type="checkbox" id="v10" class="hidden show-sol">
+                        <label for="v10" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Check closure under scalar multiplication.<br>
+                            2. Let scalar $c = 0.5$ and vector $v = 1 \in \mathbb{Z}$.<br>
+                            3. $c \cdot v = 0.5 \times 1 = 0.5$.<br>
+                            4. $0.5$ is not an integer. Not a vector space.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="subspaces">
+            <div class="concept-card bg-white p-8 rounded-lg shadow-md">
+                <h2 class="text-3xl font-bold text-indigo-800 mb-4">2. Subspaces & Span</h2>
+                <div class="bg-indigo-50 p-6 rounded mb-8 text-sm">
+                    <h3 class="font-bold text-indigo-900 mb-2 underline">Definition & Explanation</h3>
+                    <p>A subset $H$ is a <strong>Subspace</strong> of $V$ if: 1) $\mathbf{0} \in H$, 2) $\mathbf{u}+\mathbf{v} \in H$, 3) $c\mathbf{u} \in H$. The <strong>Span</strong> of a set of vectors is the set of all their linear combinations. Geometrically, subspaces of $\mathbb{R}^3$ are the origin, lines/planes through the origin, or $\mathbb{R}^3$ itself.</p>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="border-b pb-4">
+                        <p class="font-medium">1. (Deduct) Is the plane $x + 2y - z = 4$ a subspace of $\mathbb{R}^3$?</p>
+                        <input type="checkbox" id="s1" class="hidden show-sol">
+                        <label for="s1" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Check for the zero vector $\mathbf{0} = \langle 0,0,0 \rangle$.<br>
+                            2. $0 + 2(0) - 0 = 0 \neq 4$.<br>
+                            3. Fails the zero vector test. Not a subspace. (Subspaces must pass through the origin).
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">2. (Calc) Is $\mathbf{w} = \langle 3, 7 \rangle$ in $\text{span}\{ \langle 1, 2 \rangle, \langle 0, 1 \rangle \}$?</p>
+                        <input type="checkbox" id="s2" class="hidden show-sol">
+                        <label for="s2" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. $\alpha\langle 1, 2 \rangle + \beta\langle 0, 1 \rangle = \langle 3, 7 \rangle$.<br>
+                            2. $\alpha = 3$ and $2\alpha + \beta = 7$.<br>
+                            3. $2(3) + \beta = 7 \implies 6 + \beta = 7 \implies \beta = 1$.<br>
+                            4. Solution exists, so $\mathbf{w}$ is in the span.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">3. (Proof) Prove that the intersection of two subspaces $H_1, H_2$ is a subspace.</p>
+                        <input type="checkbox" id="s3" class="hidden show-sol">
+                        <label for="s3" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Zero: $\mathbf{0} \in H_1$ and $\mathbf{0} \in H_2 \implies \mathbf{0} \in H_1 \cap H_2$.<br>
+                            2. Additive: If $\mathbf{u}, \mathbf{v} \in H_1 \cap H_2$, then $\mathbf{u}+\mathbf{v} \in H_1$ and $\mathbf{u}+\mathbf{v} \in H_2$ (as they are subspaces). Thus $\mathbf{u}+\mathbf{v} \in H_1 \cap H_2$.<br>
+                            3. Scalar: Similar logic applies to $c\mathbf{u}$. All 3 criteria met.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">4. (Calc) Find a spanning set for the plane $x - y + 2z = 0$.</p>
+                        <input type="checkbox" id="s4" class="hidden show-sol">
+                        <label for="s4" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Solve for $x$: $x = y - 2z$.<br>
+                            2. Vector form: $\begin{bmatrix} x \\ y \\ z \end{bmatrix} = \begin{bmatrix} y-2z \\ y \\ z \end{bmatrix} = y\begin{bmatrix} 1 \\ 1 \\ 0 \end{bmatrix} + z\begin{bmatrix} -2 \\ 0 \\ 1 \end{bmatrix}$.<br>
+                            3. Spanning set: $\{ \langle 1, 1, 0 \rangle, \langle -2, 0, 1 \rangle \}$.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">5. (Deduct) Is the set of all vectors with $x \cdot y = 0$ (the axes) a subspace of $\mathbb{R}^2$?</p>
+                        <input type="checkbox" id="s5" class="hidden show-sol">
+                        <label for="s5" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Check closure under addition.<br>
+                            2. $\mathbf{u} = \langle 1, 0 \rangle$ and $\mathbf{v} = \langle 0, 1 \rangle$ are in the set.<br>
+                            3. $\mathbf{u} + \mathbf{v} = \langle 1, 1 \rangle$.<br>
+                            4. $1 \cdot 1 = 1 \neq 0$. Not closed under addition, not a subspace.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">6. (Proof) Prove that $\text{span}\{ \mathbf{v}_1, \dots, \mathbf{v}_k \}$ is always a subspace.</p>
+                        <input type="checkbox" id="s6" class="hidden show-sol">
+                        <label for="s6" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. $\mathbf{0}$ is in the span (all weights $= 0$).<br>
+                            2. Addition: $(c_1\mathbf{v}_1 + \dots) + (d_1\mathbf{v}_1 + \dots) = (c_1+d_1)\mathbf{v}_1 + \dots$ (still a linear combo).<br>
+                            3. Scalar: $k(c_1\mathbf{v}_1 + \dots) = (kc_1)\mathbf{v}_1 + \dots$ (still a linear combo). All criteria met.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">7. (Calc) Does $\langle 1, 2, 3 \rangle$ belong to $\text{span}\{ \langle 1, 0, 1 \rangle, \langle 0, 1, 1 \rangle \}$?</p>
+                        <input type="checkbox" id="s7" class="hidden show-sol">
+                        <label for="s7" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. $\alpha + 0 = 1 \implies \alpha=1$.<br>
+                            2. $0 + \beta = 2 \implies \beta=2$.<br>
+                            3. Check 3rd comp: $\alpha + \beta = 1+2 = 3$.<br>
+                            4. Matches! Yes, it belongs to the span.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">8. (Deduct) Is the union of two subspaces always a subspace?</p>
+                        <input type="checkbox" id="s8" class="hidden show-sol">
+                        <label for="s8" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. No. Refer to the "axes" example in Q5.<br>
+                            2. The $x$-axis and $y$-axis are both subspaces.<br>
+                            3. Their union (the axes) is not closed under addition (e.g., $\langle 1,0 \rangle + \langle 0,1 \rangle = \langle 1,1 \rangle$, which is not on an axis).
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">9. (Calc) Find weights $\alpha, \beta, \gamma$ for $\langle 0, 0, 1 \rangle = \alpha\langle 1, 0, 0 \rangle + \beta\langle 1, 1, 0 \rangle + \gamma\langle 1, 1, 1 \rangle$.</p>
+                        <input type="checkbox" id="s9" class="hidden show-sol">
+                        <label for="s9" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. $z$-comp: $\gamma = 1$.<br>
+                            2. $y$-comp: $\beta + \gamma = 0 \implies \beta + 1 = 0 \implies \beta = -1$.<br>
+                            3. $x$-comp: $\alpha + \beta + \gamma = 0 \implies \alpha - 1 + 1 = 0 \implies \alpha = 0$.<br>
+                            4. Weights: $(0, -1, 1)$.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">10. (Proof) If $\mathbf{v} \in H$ (a subspace), show that its inverse $-\mathbf{v} \in H$.</p>
+                        <input type="checkbox" id="s10" class="hidden show-sol">
+                        <label for="s10" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. A subspace $H$ is closed under scalar multiplication.<br>
+                            2. For any $\mathbf{v} \in H$ and scalar $c \in \mathbb{R}$, $c\mathbf{v} \in H$.<br>
+                            3. Let $c = -1$. Then $(-1)\mathbf{v} \in H$.<br>
+                            4. As proven previously, $(-1)\mathbf{v} = -\mathbf{v}$. Thus $-\mathbf{v} \in H$.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="matrix-spaces">
+            <div class="concept-card bg-white p-8 rounded-lg shadow-md">
+                <h2 class="text-3xl font-bold text-indigo-800 mb-4">3. Matrix Spaces ($3 \times 3$ focus): Col A, Row A, Nul A</h2>
+                <div class="bg-indigo-50 p-6 rounded mb-8">
+                    <h3 class="font-bold text-indigo-900 mb-2 underline">Definition & Explanation</h3>
+                    <ul class="list-disc ml-5 space-y-2 text-sm">
+                        <li><strong>Column Space ($Col A$):</strong> Subspace of $\mathbb{R}^3$ spanned by columns. Basis: Pivot columns of original $A$.</li>
+                        <li><strong>Row Space ($Row A$):</strong> Subspace of $\mathbb{R}^3$ spanned by rows. Basis: Non-zero rows of $REF(A)$.</li>
+                        <li><strong>Null Space ($Nul A$):</strong> Subspace of $\mathbb{R}^3$ where $A\mathbf{x} = \mathbf{0}$. Basis: Parametric vector form of the solution.</li>
+                    </ul>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="border-b pb-4">
+                        <p class="font-medium">1. (Calc) Find a basis for $Col A$ where $A = \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 1 & 1 & 2 \end{bmatrix}$.</p>
+                        <input type="checkbox" id="m1" class="hidden show-sol">
+                        <label for="m1" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Reduce to REF: $R_3 - R_1 \to \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 0 & 1 & 1 \end{bmatrix}$. Then $R_3 - R_2 \to \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 0 & 0 & 0 \end{bmatrix}$.<br>
+                            2. Pivots are in Column 1 and Column 2.<br>
+                            3. Use corresponding columns of <strong>original</strong> $A$: Basis = $\{ \begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix}, \begin{bmatrix} 0 \\ 1 \\ 1 \end{bmatrix} \}$.
+                        </div>
+                    </div>
+
+                    <div class="border-b pb-4">
+                        <p class="font-medium">2. (Calc) Find a basis for $Row A$ for $A$ in Q1.</p>
+                        <input type="checkbox" id="m2" class="hidden show-sol">
+                        <label for="m2" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. From Q1, $REF(A) = \begin{bmatrix} 1 & 0 & 1 \\ 0 & 1 & 1 \\ 0 & 0 & 0 \end{bmatrix}$.<br>
+                            2. Take the non-zero rows of the REF.<br>
+                            3. Basis = $\{ \langle 1, 0, 1 \rangle, \langle 0, 1, 1 \rangle \}$.
+                        </div>
+                    </div>
+
+                    <div class="border-b pb-4">
+                        <p class="font-medium">3. (Calc) Find a basis for $Nul A$ for $A$ in Q1.</p>
+                        <input type="checkbox" id="m3" class="hidden show-sol">
+                        <label for="m3" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Solve $Ax = \mathbf{0}$ using REF: $x_1 + x_3 = 0$ and $x_2 + x_3 = 0$.<br>
+                            2. Free variable $x_3 = s$. Then $x_1 = -s$ and $x_2 = -s$.<br>
+                            3. Vector form: $\begin{bmatrix} x_1 \\ x_2 \\ x_3 \end{bmatrix} = s \begin{bmatrix} -1 \\ -1 \\ 1 \end{bmatrix}$.<br>
+                            4. Basis = $\{ \begin{bmatrix} -1 \\ -1 \\ 1 \end{bmatrix} \}$.
+                        </div>
+                    </div>
+
+                    <div class="border-b pb-4">
+                        <p class="font-medium">4. (Deduct) If $A$ is a $3 \times 3$ matrix with $\text{rank}(A) = 3$, describe $Nul A$.</p>
+                        <input type="checkbox" id="m4" class="hidden show-sol">
+                        <label for="m4" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Rank-Nullity: $\text{rank}(A) + \text{nullity}(A) = 3$.<br>
+                            2. $3 + \text{nullity}(A) = 3 \implies \text{nullity}(A) = 0$.<br>
+                            3. The only vector in $Nul A$ is the zero vector. $Nul A = \{ \mathbf{0} \}$.
+                        </div>
+                    </div>
+
+                    <div class="border-b pb-4">
+                        <p class="font-medium">5. (Proof) Prove that $\text{dim}(Row A) = \text{dim}(Col A)$ for any $3 \times 3$ matrix.</p>
+                        <input type="checkbox" id="m5" class="hidden show-sol">
+                        <label for="m5" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Both dimensions are determined by the number of pivot positions in the matrix.<br>
+                            2. Each pivot resides in exactly one row and one column.<br>
+                            3. Therefore, the number of pivot rows equals the number of pivot columns.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">6. (Calc) Find a basis for $Nul \begin{bmatrix} 1 & 1 & 1 \\ 1 & 1 & 1 \\ 1 & 1 & 1 \end{bmatrix}$.</p>
+                        <input type="checkbox" id="m6" class="hidden show-sol">
+                        <label for="m6" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. REF: $\begin{bmatrix} 1 & 1 & 1 \\ 0 & 0 & 0 \\ 0 & 0 & 0 \end{bmatrix}$. $x_1 + x_2 + x_3 = 0$.<br>
+                            2. $x_2, x_3$ are free. $x_1 = -x_2 - x_3$.<br>
+                            3. Basis = $\{ \begin{bmatrix} -1 \\ 1 \\ 0 \end{bmatrix}, \begin{bmatrix} -1 \\ 0 \\ 1 \end{bmatrix} \}$.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">7. (Deduct) Is $\mathbf{v} = \begin{bmatrix} 1 \\ 0 \\ 1 \end{bmatrix}$ in $Nul \begin{bmatrix} 1 & 0 & -1 \\ 0 & 1 & 0 \\ 1 & 0 & -1 \end{bmatrix}$?</p>
+                        <input type="checkbox" id="m7" class="hidden show-sol">
+                        <label for="m7" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Multiply $A\mathbf{v} = \begin{bmatrix} 1-1 \\ 0 \\ 1-1 \end{bmatrix} = \begin{bmatrix} 0 \\ 0 \\ 0 \end{bmatrix}$.<br>
+                            2. Yes, it is in the Null Space.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">8. (Calc) If $\text{dim}(Col A) = 2$ for $A \in \mathbb{R}^{3 \times 3}$, what is the geometric shape of $Nul A$?</p>
+                        <input type="checkbox" id="m8" class="hidden show-sol">
+                        <label for="m8" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Rank-Nullity: $2 + \text{nullity} = 3 \implies \text{nullity} = 1$.<br>
+                            2. A 1-dimensional subspace in $\mathbb{R}^3$ is a <strong>line</strong> through the origin.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">9. (Deduct) Can a $3 \times 3$ matrix have $\text{rank} = 0$?</p>
+                        <input type="checkbox" id="m9" class="hidden show-sol">
+                        <label for="m9" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. Yes, but only for the Zero Matrix ($A = [0]$).<br>
+                            2. In this case, $Col A = \{ \mathbf{0} \}$ and $Nul A = \mathbb{R}^3$.
+                        </div>
+                    </div>
+                    <div class="border-b pb-4">
+                        <p class="font-medium">10. (Proof) Prove $Row A$ is orthogonal to $Nul A$.</p>
+                        <input type="checkbox" id="m10" class="hidden show-sol">
+                        <label for="m10" class="text-xs text-blue-600 cursor-pointer hover:underline font-bold">[SHOW SOLUTION]</label>
+                        <div class="solution-content mt-2 p-4 bg-gray-50 rounded text-sm">
+                            1. $Ax = \mathbf{0}$ means every row of $A$ dot $x$ is 0.<br>
+                            2. Since every row of $A$ is perpendicular to $x$, any linear combination of rows (the Row Space) is also perpendicular to $x$.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-indigo-950 text-indigo-300 py-12 text-center">
+        <p class="text-sm uppercase tracking-widest font-bold">End of Study Guide - ENGG1120</p>
+    </footer>
+
+</body>
+</html>

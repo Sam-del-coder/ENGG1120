@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Algebra Study Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+            border-radius: 16px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.35);
+        }
+
+        .header h1 {
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .nav-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .nav-card {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 24px 28px;
+            text-decoration: none;
+            color: #202020;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.25s ease;
+            border-left: 5px solid transparent;
+            cursor: pointer;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.13);
+        }
+
+        .nav-card.purple  { border-left-color: #764ba2; }
+        .nav-card.blue    { border-left-color: #667eea; }
+        .nav-card.teal    { border-left-color: #0ea5e9; }
+        .nav-card.green   { border-left-color: #059669; }
+        .nav-card.orange  { border-left-color: #f59e0b; }
+
+        .nav-card.purple:hover  { background: linear-gradient(135deg, rgba(118,75,162,0.06), rgba(102,126,234,0.06)); }
+        .nav-card.blue:hover    { background: linear-gradient(135deg, rgba(102,126,234,0.06), rgba(118,75,162,0.06)); }
+        .nav-card.teal:hover    { background: linear-gradient(135deg, rgba(14,165,233,0.06), rgba(6,182,212,0.06)); }
+        .nav-card.green:hover   { background: linear-gradient(135deg, rgba(5,150,105,0.06), rgba(16,185,129,0.06)); }
+        .nav-card.orange:hover  { background: linear-gradient(135deg, rgba(245,158,11,0.06), rgba(234,179,8,0.06)); }
+
+        .nav-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .nav-card.purple .nav-icon  { background: rgba(118,75,162,0.12); }
+        .nav-card.blue   .nav-icon  { background: rgba(102,126,234,0.12); }
+        .nav-card.teal   .nav-icon  { background: rgba(14,165,233,0.12); }
+        .nav-card.green  .nav-icon  { background: rgba(5,150,105,0.12); }
+        .nav-card.orange .nav-icon  { background: rgba(245,158,11,0.12); }
+
+        .nav-text h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .nav-text p {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        .nav-arrow {
+            margin-left: auto;
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            transition: transform 0.25s ease, color 0.25s ease;
+        }
+
+        .nav-card:hover .nav-arrow {
+            transform: translateX(4px);
+            color: #764ba2;
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 480px) {
+            .header h1 { font-size: 1.8rem; }
+            .nav-card { padding: 18px 20px; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="header">
+        <h1>📐 ENGG1120</h1>
+        <p>Study Notes &amp; Practice Problems</p>
+    </div>
+
+    <div class="nav-grid">
+
+        <a class="nav-card purple" href="Eigenvalue.html">
+            <div class="nav-icon">λ</div>
+            <div class="nav-text">
+                <h3>Eigenvalues &amp; Eigenvectors</h3>
+                <p>Characteristic polynomials, diagonalization</p>
+            </div>
+            <span class="nav-arrow">›</span>
+        </a>
+
+        <a class="nav-card blue" href="LinearTransformation.html">
+            <div class="nav-icon">T</div>
+            <div class="nav-text">
+                <h3>Linear Transformations</h3>
+                <p>Matrix representations, range, kernel</p>
+            </div>
+            <span class="nav-arrow">›</span>
+        </a>
+
+        <a class="nav-card teal" href="GramSchmidtProcess.html">
+            <div class="nav-icon">∑</div>
+            <div class="nav-text">
+                <h3>The Gram&ndash;Schmidt Process</h3>
+                <p>Constructing orthogonal bases, QR factorization</p>
+            </div>
+            <span class="nav-arrow">›</span>
+        </a>
+    </div>
+
+    <div class="footer">If A range please give me money</div>
+</div>
+</body>
+</html>

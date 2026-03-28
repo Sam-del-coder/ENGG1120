@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; line-height: 1.6; color: #202020; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 10px; }
+        .header p { font-size: 1.1rem; opacity: 0.95; }
+        .toc { background: white; padding: 30px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .toc h2 { font-size: 1.8rem; margin-bottom: 20px; color: #667eea; border-bottom: 3px solid #667eea; padding-bottom: 10px; }
+        .toc ul { list-style: none; }
+        .toc li { margin: 12px 0; padding-left: 20px; position: relative; }
+        .toc li:before { content: "▸"; position: absolute; left: 0; color: #667eea; font-weight: bold; }
+        .toc a { color: #202020; text-decoration: none; transition: color 0.3s; font-weight: 500; }
+        .toc a:hover { color: #667eea; }
+        .section { background: white; padding: 40px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .section-title { font-size: 2rem; font-weight: 700; color: #667eea; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 3px solid #667eea; }
+        .concept-title { font-size: 1.5rem; font-weight: 600; color: #764ba2; margin: 30px 0 20px 0; padding: 15px; background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.1) 100%); border-left: 4px solid #764ba2; border-radius: 4px; }
+        .definition-box { background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); border-left: 5px solid #0284c7; padding: 25px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .definition-box h3 { color: #0284c7; font-weight: 600; margin-bottom: 15px; font-size: 1.2rem; }
+        .theorem-box { background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%); border-left: 5px solid #7c3aed; padding: 25px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .theorem-box h3 { color: #7c3aed; font-weight: 600; margin-bottom: 15px; font-size: 1.2rem; }
+        .questions-box { background: linear-gradient(135deg, #fef9c3 0%, #fef08a 100%); border-left: 5px solid #eab308; padding: 25px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .questions-box h3 { color: #ca8a04; font-weight: 600; margin-bottom: 15px; font-size: 1.2rem; }
+        .solutions-box { background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-left: 5px solid #059669; padding: 25px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .solutions-box h3 { color: #059669; font-weight: 600; margin-bottom: 15px; font-size: 1.2rem; }
+        .proof-box { background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%); border-left: 5px solid #9333ea; padding: 25px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .proof-box h3 { color: #9333ea; font-weight: 600; margin-bottom: 15px; font-size: 1.2rem; }
+        .question-item { margin: 15px 0; padding: 15px; background: rgba(255,255,255,0.6); border-radius: 6px; }
+        .question-number { font-weight: 600; color: #ca8a04; margin-right: 8px; }
+        .solution-item { margin: 15px 0; padding: 15px; background: rgba(255,255,255,0.6); border-radius: 6px; }
+        .solution-item.hidden { display: none !important; }
+        .solution-number { font-weight: 600; color: #059669; margin-right: 8px; }
+        .formula { background: #f8fafc; padding: 15px; margin: 10px 0; border-radius: 6px; font-family: 'Courier New', monospace; border: 1px solid #e2e8f0; overflow-x: auto; }
+        .highlight { background: #fef08a; padding: 2px 6px; border-radius: 3px; font-weight: 500; }
+        .note { background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 15px 0; border-radius: 4px; }
+        .example { background: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 20px; margin: 15px 0; border-radius: 4px; }
+        .example h4 { color: #0284c7; font-weight: 600; margin-bottom: 10px; }
+        .step { margin: 10px 0; padding-left: 20px; border-left: 2px solid #cbd5e1; }
+        .step-title { font-weight: 600; color: #475569; margin-bottom: 5px; }
+        sub { font-size: 0.75em; vertical-align: sub; }
+        sup { font-size: 0.75em; vertical-align: super; }
+        @media (max-width: 768px) { .header h1 { font-size: 1.8rem; } .section { padding: 20px; } .section-title { font-size: 1.5rem; } }
+    </style>
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" id="MathJax-script" async></script>
+</head>
+<body>
+<div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>Linear Algebra</h1>
+        <p>The Gram&ndash;Schmidt Process &amp; QR Factorization</p>
+    </div>
+
+    <!-- TABLE OF CONTENTS -->
+    <div class="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+            <li><a href="#sec1">Concept 1 &mdash; Orthogonal Basis</a></li>
+            <li><a href="#sec2">Concept 2 &mdash; The Gram&ndash;Schmidt Process</a></li>
+            <li><a href="#sec3">Concept 3 &mdash; Orthonormal Basis &amp; Normalization</a></li>
+            <li><a href="#sec4">Concept 4 &mdash; QR Factorization</a></li>
+        </ul>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- CONCEPT 1: ORTHOGONAL BASIS                            -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec1">
+        <div class="section-title">Concept 1 &mdash; Orthogonal Basis</div>
+
+        <div class="definition-box">
+            <h3>Definition</h3>
+            <p>An <strong>orthogonal set</strong> in \(\mathbb{R}^n\) is a set of vectors \(\{v_1, v_2, \ldots, v_p\}\) such that every pair of distinct vectors is orthogonal:</p>
+            <div class="formula">\[ v_i \cdot v_j = 0 \quad \text{for all } i \neq j \]</div>
+            <p style="margin-top:12px;">An <strong>orthogonal basis</strong> for a subspace \(W\) is a basis that is also an orthogonal set. It is guaranteed to exist for any nonzero subspace of \(\mathbb{R}^n\) (via the Gram&ndash;Schmidt process).</p>
+            <p style="margin-top:12px;"><strong>Key Property:</strong> If \(\{v_1,\ldots,v_p\}\) is an orthogonal basis for \(W\), then the coordinates of any \(y \in W\) are given by:</p>
+            <div class="formula">\[ y = \frac{y \cdot v_1}{v_1 \cdot v_1}v_1 + \frac{y \cdot v_2}{v_2 \cdot v_2}v_2 + \cdots + \frac{y \cdot v_p}{v_p \cdot v_p}v_p \]</div>
+        </div>
+
+        <div class="theorem-box">
+            <h3>Theorem: Orthogonal Sets are Linearly Independent</h3>
+            <p>If \(S = \{v_1, v_2, \ldots, v_p\}\) is an orthogonal set of <strong>nonzero</strong> vectors in \(\mathbb{R}^n\), then \(S\) is linearly independent and hence is a basis for the subspace spanned by \(S\).</p>
+        </div>
+
+        <div class="example">
+            <h4>Example: Verifying an Orthogonal Basis</h4>
+            <p>Let \(v_1 = \begin{pmatrix}3\\6\\0\end{pmatrix}\) and \(v_2 = \begin{pmatrix}0\\0\\2\end{pmatrix}\). Check orthogonality:</p>
+            <p style="margin-top:8px;">\(v_1 \cdot v_2 = 3(0) + 6(0) + 0(2) = 0\) ✓</p>
+            <p>So \(\{v_1, v_2\}\) is an orthogonal set and a basis for \(W = \text{Span}\{v_1, v_2\}\).</p>
+        </div>
+
+        <!-- QUESTIONS -->
+        <div class="questions-box">
+            <h3>Practice Questions</h3>
+
+            <div class="question-item">
+                <span class="question-number">Q1.</span>
+                Verify that the set \(\left\{\begin{pmatrix}1\\0\\-1\end{pmatrix},\, \begin{pmatrix}1\\1\\1\end{pmatrix},\, \begin{pmatrix}-1\\2\\-1\end{pmatrix}\right\}\) is orthogonal in \(\mathbb{R}^3\), and state why it is a basis for \(\mathbb{R}^3\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q2.</span>
+                Let \(v_1 = \begin{pmatrix}2\\1\\0\end{pmatrix}\) and \(v_2 = \begin{pmatrix}-1\\2\\0\end{pmatrix}\). Write \(y = \begin{pmatrix}3\\4\\0\end{pmatrix}\) as a linear combination of \(v_1\) and \(v_2\) using the orthogonal coordinate formula.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q3.</span>
+                Let \(v_1 = \begin{pmatrix}1\\1\\1\end{pmatrix}\) and \(v_2 = \begin{pmatrix}1\\-2\\1\end{pmatrix}\). Verify this is an orthogonal set, then find the orthogonal projection of \(y = \begin{pmatrix}2\\0\\4\end{pmatrix}\) onto \(W = \text{Span}\{v_1, v_2\}\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q4.</span>
+                <strong>(Calculation)</strong> Find a value of \(k\) such that \(\left\{\begin{pmatrix}1\\2\\k\end{pmatrix},\, \begin{pmatrix}2\\-1\\0\end{pmatrix}\right\}\) is an orthogonal set.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q5.</span>
+                <strong>(Proof)</strong> Prove that any orthogonal set of nonzero vectors in \(\mathbb{R}^n\) is linearly independent.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q6.</span>
+                <strong>(Proof)</strong> Let \(\{v_1, v_2\}\) be an orthogonal basis for a subspace \(W\), and let \(y \in W\). Prove that the orthogonal decomposition formula \(y = c_1 v_1 + c_2 v_2\) with \(c_i = \frac{y \cdot v_i}{v_i \cdot v_i}\) is correct.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q7.</span>
+                <strong>(Calculation)</strong> The set \(\left\{\begin{pmatrix}1\\0\\1\\0\end{pmatrix},\, \begin{pmatrix}0\\1\\0\\1\end{pmatrix},\, \begin{pmatrix}1\\0\\-1\\0\end{pmatrix}\right\}\) lies in \(\mathbb{R}^4\). Verify it is orthogonal, then find the fourth vector \(v_4\) to extend it to an orthogonal basis of \(\mathbb{R}^4\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q8.</span>
+                Can a set containing the zero vector be an orthogonal basis? Justify your answer.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q9.</span>
+                <strong>(Proof)</strong> Suppose \(\{v_1, \ldots, v_p\}\) is an orthogonal basis for \(W\). Show that for any vector \(y\), the vector \(y - \hat{y}\) (where \(\hat{y} = \text{proj}_W y\)) is orthogonal to every \(v_i\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q10.</span>
+                <strong>(Calculation)</strong> Given the orthogonal basis \(v_1 = \begin{pmatrix}2\\0\\0\end{pmatrix},\, v_2 = \begin{pmatrix}0\\3\\0\end{pmatrix},\, v_3 = \begin{pmatrix}0\\0\\5\end{pmatrix}\) for \(\mathbb{R}^3\), express \(y = \begin{pmatrix}4\\9\\15\end{pmatrix}\) in terms of this basis.
+            </div>
+        </div>
+
+        <!-- SOLUTIONS -->
+        <div class="solutions-box">
+            <h3>Solutions</h3>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 1:</span>
+                <div class="step">
+                    <div class="step-title">Check all three pairs:</div>
+                    <p>\(v_1 \cdot v_2 = (1)(1)+(0)(1)+(-1)(1) = 1+0-1 = 0\) ✓</p>
+                    <p>\(v_1 \cdot v_3 = (1)(-1)+(0)(2)+(-1)(-1) = -1+0+1 = 0\) ✓</p>
+                    <p>\(v_2 \cdot v_3 = (1)(-1)+(1)(2)+(1)(-1) = -1+2-1 = 0\) ✓</p>
+                </div>
+                <div class="step">
+                    <div class="step-title">Conclusion:</div>
+                    <p>All three vectors are nonzero and mutually orthogonal, so by the theorem they are linearly independent. Since we have 3 linearly independent vectors in \(\mathbb{R}^3\), they form a basis for \(\mathbb{R}^3\).</p>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 2:</span>
+                <div class="step">
+                    <div class="step-title">Apply the orthogonal coordinate formula:</div>
+                    <p>\(c_1 = \frac{y \cdot v_1}{v_1 \cdot v_1} = \frac{3(2)+4(1)+0(0)}{4+1+0} = \frac{10}{5} = 2\)</p>
+                    <p>\(c_2 = \frac{y \cdot v_2}{v_2 \cdot v_2} = \frac{3(-1)+4(2)+0(0)}{1+4+0} = \frac{5}{5} = 1\)</p>
+                </div>
+                <div class="step">
+                    <div class="step-title">Result:</div>
+                    <p>\(y = 2\begin{pmatrix}2\\1\\0\end{pmatrix} + 1\begin{pmatrix}-1\\2\\0\end{pmatrix} = \begin{pmatrix}4-1\\2+2\\0\end{pmatrix} = \begin{pmatrix}3\\4\\0\end{pmatrix}\) ✓</p>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 4 (Calculation):</span>
+                <div class="step">
+                    <div class="step-title">Set the dot product to zero:</div>
+                    <p>\(\begin{pmatrix}1\\2\\k\end{pmatrix} \cdot \begin{pmatrix}2\\-1\\0\end{pmatrix} = 1(2)+2(-1)+k(0) = 2-2 = 0\)</p>
+                </div>
+                <div class="step">
+                    <div class="step-title">Result:</div>
+                    <p>The dot product is 0 for <strong>any</strong> value of \(k\). So \(k\) can be any real number (e.g., \(k = 0\)).</p>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 5 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: Orthogonal Sets are Linearly Independent</h3>
+                    <div class="step">
+                        <div class="step-title">Setup:</div>
+                        <p>Let \(\{v_1, \ldots, v_p\}\) be an orthogonal set of nonzero vectors. Suppose:</p>
+                        <p>\(c_1 v_1 + c_2 v_2 + \cdots + c_p v_p = 0\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">Take the dot product with \(v_j\) for any fixed \(j\):</div>
+                        <p>\(0 = 0 \cdot v_j = (c_1 v_1 + \cdots + c_p v_p) \cdot v_j\)</p>
+                        <p>\(= c_1(v_1 \cdot v_j) + \cdots + c_j(v_j \cdot v_j) + \cdots + c_p(v_p \cdot v_j)\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">Use orthogonality (\(v_i \cdot v_j = 0\) for \(i \neq j\)):</div>
+                        <p>\(0 = c_j(v_j \cdot v_j) = c_j \|v_j\|^2\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">Conclude:</div>
+                        <p>Since \(v_j \neq 0\), we have \(\|v_j\|^2 > 0\), so \(c_j = 0\). Since \(j\) was arbitrary, all \(c_j = 0\). Therefore the set is linearly independent. ∎</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 6 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: Orthogonal Decomposition Formula</h3>
+                    <div class="step">
+                        <div class="step-title">Setup:</div>
+                        <p>Since \(\{v_1, v_2\}\) is an orthogonal basis for \(W\) and \(y \in W\), we can write \(y = c_1 v_1 + c_2 v_2\) for some scalars \(c_1, c_2\).</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">Take dot product with \(v_1\):</div>
+                        <p>\(y \cdot v_1 = (c_1 v_1 + c_2 v_2) \cdot v_1 = c_1(v_1 \cdot v_1) + c_2(v_2 \cdot v_1)\)</p>
+                        <p>Since \(v_1 \cdot v_2 = 0\): \(\quad y \cdot v_1 = c_1 \|v_1\|^2\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">Solve for \(c_1\):</div>
+                        <p>\(c_1 = \frac{y \cdot v_1}{v_1 \cdot v_1}\). Similarly \(c_2 = \frac{y \cdot v_2}{v_2 \cdot v_2}\). ∎</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 9 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: \(y - \hat{y}\) is orthogonal to \(W\)</h3>
+                    <div class="step">
+                        <div class="step-title">Definition of \(\hat{y}\):</div>
+                        <p>\(\hat{y} = \sum_{i=1}^{p} \frac{y \cdot v_i}{v_i \cdot v_i} v_i\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">Compute \((y - \hat{y}) \cdot v_k\) for any \(k\):</div>
+                        <p>\((y - \hat{y}) \cdot v_k = y \cdot v_k - \hat{y} \cdot v_k\)</p>
+                        <p>\(\hat{y} \cdot v_k = \sum_{i=1}^{p} \frac{y \cdot v_i}{v_i \cdot v_i}(v_i \cdot v_k) = \frac{y \cdot v_k}{v_k \cdot v_k}(v_k \cdot v_k) = y \cdot v_k\)</p>
+                        <p>(using orthogonality: \(v_i \cdot v_k = 0\) for \(i \neq k\))</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">Conclude:</div>
+                        <p>\((y - \hat{y}) \cdot v_k = y \cdot v_k - y \cdot v_k = 0\) for every \(k\). Hence \(y - \hat{y}\) is orthogonal to every basis vector of \(W\), and therefore orthogonal to all of \(W\). ∎</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 10 (Calculation):</span>
+                <div class="step">
+                    <p>\(c_1 = \frac{y \cdot v_1}{\|v_1\|^2} = \frac{8}{4} = 2, \quad c_2 = \frac{y \cdot v_2}{\|v_2\|^2} = \frac{27}{9} = 3, \quad c_3 = \frac{y \cdot v_3}{\|v_3\|^2} = \frac{75}{25} = 3\)</p>
+                    <p>So \(y = 2v_1 + 3v_2 + 3v_3\).</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- CONCEPT 2: GRAM-SCHMIDT PROCESS                        -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec2">
+        <div class="section-title">Concept 2 &mdash; The Gram&ndash;Schmidt Process</div>
+
+        <div class="definition-box">
+            <h3>Definition</h3>
+            <p>The <strong>Gram&ndash;Schmidt Process</strong> is an algorithm that converts any basis \(\{x_1, x_2, \ldots, x_p\}\) for a nonzero subspace \(W \subseteq \mathbb{R}^n\) into an <strong>orthogonal basis</strong> \(\{v_1, v_2, \ldots, v_p\}\) for the same subspace.</p>
+        </div>
+
+        <div class="theorem-box">
+            <h3>Theorem 11 &mdash; The Gram&ndash;Schmidt Process</h3>
+            <p>Given a basis \(\{x_1, \ldots, x_p\}\) for a nonzero subspace \(W\) of \(\mathbb{R}^n\), define:</p>
+            <div class="formula">
+\[v_1 = x_1\]
+\[v_2 = x_2 - \frac{x_2 \cdot v_1}{v_1 \cdot v_1}v_1\]
+\[v_3 = x_3 - \frac{x_3 \cdot v_1}{v_1 \cdot v_1}v_1 - \frac{x_3 \cdot v_2}{v_2 \cdot v_2}v_2\]
+\[\vdots\]
+\[v_p = x_p - \sum_{k=1}^{p-1}\frac{x_p \cdot v_k}{v_k \cdot v_k}v_k\]
+            </div>
+            <p style="margin-top:10px;">Then \(\{v_1, \ldots, v_p\}\) is an orthogonal basis for \(W\), and for each \(k\):</p>
+            <div class="formula">\[\text{Span}\{v_1, \ldots, v_k\} = \text{Span}\{x_1, \ldots, x_k\}\]</div>
+        </div>
+
+        <div class="note">
+            <strong>Intuition:</strong> At each step, \(v_{k+1}\) is obtained by removing from \(x_{k+1}\) the component that lies in the subspace already spanned by \(v_1, \ldots, v_k\). The remaining part is orthogonal to everything already built.
+        </div>
+
+        <div class="example">
+            <h4>Example: Gram&ndash;Schmidt on 3 Vectors</h4>
+            <p>Let \(x_1 = \begin{pmatrix}1\\1\\1\\1\end{pmatrix}\), \(x_2 = \begin{pmatrix}0\\1\\1\\1\end{pmatrix}\), \(x_3 = \begin{pmatrix}0\\0\\1\\1\end{pmatrix}\).</p>
+            <p style="margin-top:8px;"><strong>Step 1:</strong> \(v_1 = x_1 = \begin{pmatrix}1\\1\\1\\1\end{pmatrix}\)</p>
+            <p><strong>Step 2:</strong> \(v_2 = x_2 - \frac{3}{4}v_1 = \begin{pmatrix}-3/4\\1/4\\1/4\\1/4\end{pmatrix}\) (scale to \(\begin{pmatrix}-3\\1\\1\\1\end{pmatrix}\))</p>
+            <p><strong>Step 3:</strong> Subtract projections of \(x_3\) onto \(v_1\) and \(v_2\), yielding \(v_3 = \begin{pmatrix}0\\-2/3\\1/3\\1/3\end{pmatrix}\).</p>
+        </div>
+
+        <!-- QUESTIONS -->
+        <div class="questions-box">
+            <h3>Practice Questions</h3>
+
+            <div class="question-item">
+                <span class="question-number">Q1.</span>
+                Apply the Gram&ndash;Schmidt process to \(x_1 = \begin{pmatrix}3\\0\\-1\end{pmatrix}\), \(x_2 = \begin{pmatrix}8\\5\\-6\end{pmatrix}\) to produce an orthogonal basis for \(W = \text{Span}\{x_1, x_2\}\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q2.</span>
+                Apply the Gram&ndash;Schmidt process to \(x_1 = \begin{pmatrix}2\\-5\\1\end{pmatrix}\), \(x_2 = \begin{pmatrix}4\\-1\\2\end{pmatrix}\) to obtain an orthogonal basis for \(\text{Span}\{x_1, x_2\}\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q3.</span>
+                Apply Gram&ndash;Schmidt to \(x_1 = \begin{pmatrix}1\\-2\\1\\-2\end{pmatrix}\), \(x_2 = \begin{pmatrix}5\\-6\\7\\-8\end{pmatrix}\) in \(\mathbb{R}^4\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q4.</span>
+                <strong>(Proof)</strong> Show that for any step \(k\) of the Gram&ndash;Schmidt process, the vector \(v_{k+1} = x_{k+1} - \text{proj}_{W_k} x_{k+1}\) is orthogonal to every \(v_i\) for \(i \leq k\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q5.</span>
+                <strong>(Proof)</strong> Prove that \(\text{Span}\{v_1, \ldots, v_k\} = \text{Span}\{x_1, \ldots, x_k\}\) at every step \(k\) of the Gram&ndash;Schmidt process.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q6.</span>
+                <strong>(Calculation)</strong> Find an orthogonal basis for the column space of \(A = \begin{pmatrix}1&2\\1&-1\\1&4\end{pmatrix}\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q7.</span>
+                If you scale \(v_2\) by a nonzero scalar \(c\) during the Gram&ndash;Schmidt process, does the resulting set remain an orthogonal basis? Justify your answer.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q8.</span>
+                <strong>(Calculation)</strong> Apply Gram&ndash;Schmidt to \(x_1 = \begin{pmatrix}4\\-5\\6\end{pmatrix}\), \(x_2 = \begin{pmatrix}-8\\17\\-19\end{pmatrix}\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q9.</span>
+                <strong>(Proof)</strong> Show that \(v_{k+1} \neq 0\) at each step of the Gram&ndash;Schmidt process, given that \(x_1, \ldots, x_{k+1}\) are linearly independent.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q10.</span>
+                If \(x_1 = \begin{pmatrix}1\\1\end{pmatrix}\) and \(x_2 = \begin{pmatrix}2\\2\end{pmatrix}\), what happens when you apply the Gram&ndash;Schmidt process? What does this tell you about the input vectors?
+            </div>
+        </div>
+
+        <!-- SOLUTIONS -->
+        <div class="solutions-box">
+            <h3>Solutions</h3>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 1 (Calculation):</span>
+                <div class="step">
+                    <div class="step-title">Step 1:</div>
+                    <p>\(v_1 = x_1 = \begin{pmatrix}3\\0\\-1\end{pmatrix}\), \(\quad v_1 \cdot v_1 = 9+0+1 = 10\)</p>
+                </div>
+                <div class="step">
+                    <div class="step-title">Step 2: Compute \(x_2 \cdot v_1\):</div>
+                    <p>\(x_2 \cdot v_1 = 8(3)+5(0)+(-6)(-1) = 24+0+6 = 30\)</p>
+                    <p>\(v_2 = x_2 - \frac{30}{10}v_1 = \begin{pmatrix}8\\5\\-6\end{pmatrix} - 3\begin{pmatrix}3\\0\\-1\end{pmatrix} = \begin{pmatrix}8-9\\5-0\\-6+3\end{pmatrix} = \begin{pmatrix}-1\\5\\-3\end{pmatrix}\)</p>
+                </div>
+                <div class="step">
+                    <div class="step-title">Verify orthogonality:</div>
+                    <p>\(v_1 \cdot v_2 = 3(-1)+0(5)+(-1)(-3) = -3+0+3 = 0\) ✓</p>
+                    <p><strong>Orthogonal basis:</strong> \(\left\{\begin{pmatrix}3\\0\\-1\end{pmatrix},\begin{pmatrix}-1\\5\\-3\end{pmatrix}\right\}\)</p>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 2 (Calculation):</span>
+                <div class="step">
+                    <div class="step-title">Step 1:</div>
+                    <p>\(v_1 = \begin{pmatrix}2\\-5\\1\end{pmatrix}\), \(\quad \|v_1\|^2 = 4+25+1 = 30\)</p>
+                </div>
+                <div class="step">
+                    <div class="step-title">Step 2:</div>
+                    <p>\(x_2 \cdot v_1 = 8+5+2 = 15\)</p>
+                    <p>\(v_2 = \begin{pmatrix}4\\-1\\2\end{pmatrix} - \frac{15}{30}\begin{pmatrix}2\\-5\\1\end{pmatrix} = \begin{pmatrix}4-1\\-1+5/2\\2-1/2\end{pmatrix} = \begin{pmatrix}3\\3/2\\3/2\end{pmatrix}\)</p>
+                    <p>Scale by 2: \(v_2 = \begin{pmatrix}6\\3\\3\end{pmatrix}\) (or simplify to \(\begin{pmatrix}2\\1\\1\end{pmatrix}\))</p>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 4 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: \(v_{k+1}\) is orthogonal to all previous \(v_i\)</h3>
+                    <div class="step">
+                        <div class="step-title">By the Orthogonal Decomposition Theorem:</div>
+                        <p>\(v_{k+1} = x_{k+1} - \text{proj}_{W_k} x_{k+1}\)</p>
+                        <p>where \(W_k = \text{Span}\{v_1, \ldots, v_k\}\).</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">For any \(v_i\) with \(i \leq k\), compute the dot product:</div>
+                        <p>\(v_{k+1} \cdot v_i = \left(x_{k+1} - \text{proj}_{W_k} x_{k+1}\right) \cdot v_i\)</p>
+                        <p>By the Orthogonal Decomposition Theorem, \(x_{k+1} - \text{proj}_{W_k} x_{k+1}\) is orthogonal to \(W_k\). Since \(v_i \in W_k\), we get \(v_{k+1} \cdot v_i = 0\). ∎</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 5 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: Span is Preserved at Each Step</h3>
+                    <div class="step">
+                        <div class="step-title">Base case \(k=1\):</div>
+                        <p>\(v_1 = x_1\), so \(\text{Span}\{v_1\} = \text{Span}\{x_1\}\). ✓</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">Inductive step: Assume \(\text{Span}\{v_1,\ldots,v_k\} = \text{Span}\{x_1,\ldots,x_k\} = W_k\).</div>
+                        <p>\(v_{k+1} = x_{k+1} - \text{proj}_{W_k} x_{k+1}\)</p>
+                        <p>Since \(\text{proj}_{W_k} x_{k+1} \in W_k = \text{Span}\{v_1,\ldots,v_k\}\), we have:</p>
+                        <p>\(v_{k+1} \in \text{Span}\{x_{k+1}, v_1, \ldots, v_k\} = \text{Span}\{x_1, \ldots, x_{k+1}\} = W_{k+1}\)</p>
+                        <p>Conversely, \(x_{k+1} = v_{k+1} + \text{proj}_{W_k} x_{k+1} \in \text{Span}\{v_1, \ldots, v_{k+1}\}\).</p>
+                        <p>Hence \(\text{Span}\{v_1, \ldots, v_{k+1}\} = \text{Span}\{x_1, \ldots, x_{k+1}\}\). ∎</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 9 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: \(v_{k+1} \neq 0\)</h3>
+                    <div class="step">
+                        <p>Suppose for contradiction that \(v_{k+1} = 0\). Then:</p>
+                        <p>\(x_{k+1} = \text{proj}_{W_k} x_{k+1} \in W_k = \text{Span}\{x_1, \ldots, x_k\}\)</p>
+                        <p>But this means \(x_{k+1}\) is a linear combination of \(x_1, \ldots, x_k\), contradicting the assumption that \(x_1, \ldots, x_{k+1}\) are linearly independent. Hence \(v_{k+1} \neq 0\). ∎</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 10:</span>
+                <div class="step">
+                    <p>\(v_1 = \begin{pmatrix}1\\1\end{pmatrix}\). Then \(x_2 \cdot v_1 = 2+2 = 4\), \(\|v_1\|^2 = 2\), so:</p>
+                    <p>\(v_2 = \begin{pmatrix}2\\2\end{pmatrix} - \frac{4}{2}\begin{pmatrix}1\\1\end{pmatrix} = \begin{pmatrix}2\\2\end{pmatrix} - \begin{pmatrix}2\\2\end{pmatrix} = \begin{pmatrix}0\\0\end{pmatrix}\)</p>
+                    <p>We get \(v_2 = 0\). This indicates that \(x_1\) and \(x_2\) are <strong>linearly dependent</strong> — in fact \(x_2 = 2x_1\) — so they do not form a valid basis to begin with.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- CONCEPT 3: ORTHONORMAL BASIS                           -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec3">
+        <div class="section-title">Concept 3 &mdash; Orthonormal Basis &amp; Normalization</div>
+
+        <div class="definition-box">
+            <h3>Definition</h3>
+            <p>An <strong>orthonormal set</strong> is an orthogonal set where every vector has unit length (\(\|v\| = 1\)). An <strong>orthonormal basis</strong> for a subspace \(W\) is a basis that is also an orthonormal set.</p>
+            <p style="margin-top:10px;"><strong>Normalization:</strong> Given an orthogonal basis \(\{v_1, \ldots, v_p\}\), divide each vector by its length:</p>
+            <div class="formula">\[ u_k = \frac{v_k}{\|v_k\|}, \quad k = 1, \ldots, p \]</div>
+            <p style="margin-top:10px;">Then \(\{u_1, \ldots, u_p\}\) is an orthonormal basis. The conditions can be summarized as:</p>
+            <div class="formula">\[ u_i \cdot u_j = \delta_{ij} = \begin{cases} 1 & i = j \\ 0 & i \neq j \end{cases} \]</div>
+        </div>
+
+        <div class="theorem-box">
+            <h3>Theorem: Orthonormal Columns and \(U^T U = I\)</h3>
+            <p>An \(m \times n\) matrix \(U\) has orthonormal columns if and only if \(U^T U = I_n\).</p>
+            <p style="margin-top:8px;">As a consequence, for such \(U\):</p>
+            <ul style="padding-left: 20px; margin-top: 8px;">
+                <li>\(\|Ux\| = \|x\|\) for all \(x \in \mathbb{R}^n\)</li>
+                <li>\((Ux) \cdot (Uy) = x \cdot y\) for all \(x, y \in \mathbb{R}^n\)</li>
+                <li>\(\text{proj}_W y = UU^T y\) where \(W = \text{Col}(U)\)</li>
+            </ul>
+        </div>
+
+        <div class="example">
+            <h4>Example: Normalizing an Orthogonal Basis</h4>
+            <p>From the orthogonal basis \(v_1 = \begin{pmatrix}3\\6\\0\end{pmatrix}\), \(v_2 = \begin{pmatrix}0\\0\\2\end{pmatrix}\):</p>
+            <p style="margin-top:8px;">\(\|v_1\| = \sqrt{9+36} = \sqrt{45} = 3\sqrt{5}\), so \(u_1 = \frac{1}{3\sqrt{5}}\begin{pmatrix}3\\6\\0\end{pmatrix} = \begin{pmatrix}1/\sqrt{5}\\2/\sqrt{5}\\0\end{pmatrix}\)</p>
+            <p>\(\|v_2\| = 2\), so \(u_2 = \begin{pmatrix}0\\0\\1\end{pmatrix}\)</p>
+        </div>
+
+        <!-- QUESTIONS -->
+        <div class="questions-box">
+            <h3>Practice Questions</h3>
+
+            <div class="question-item">
+                <span class="question-number">Q1.</span>
+                Normalize the orthogonal basis \(v_1 = \begin{pmatrix}1\\1\\1\end{pmatrix}\), \(v_2 = \begin{pmatrix}-3\\1\\1\\1\end{pmatrix}\) (in \(\mathbb{R}^4\)) and \(v_1 = \begin{pmatrix}1\\1\\1\end{pmatrix}\), \(v_2 = \begin{pmatrix}1\\-2\\1\end{pmatrix}\) (in \(\mathbb{R}^3\)) to form orthonormal bases.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q2.</span>
+                <strong>(Proof)</strong> Show that if \(U\) has orthonormal columns, then \(U^TU = I\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q3.</span>
+                <strong>(Proof)</strong> Show that if \(U\) has orthonormal columns, then \(\|Ux\| = \|x\|\) for all \(x\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q4.</span>
+                <strong>(Calculation)</strong> Given the orthonormal basis \(u_1 = \frac{1}{\sqrt{2}}\begin{pmatrix}1\\1\end{pmatrix}\), \(u_2 = \frac{1}{\sqrt{2}}\begin{pmatrix}1\\-1\end{pmatrix}\) for \(\mathbb{R}^2\), find the coordinates of \(y = \begin{pmatrix}3\\7\end{pmatrix}\) with respect to this basis.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q5.</span>
+                Construct an orthonormal basis for \(W = \text{Span}\left\{\begin{pmatrix}1\\1\\0\end{pmatrix}, \begin{pmatrix}1\\0\\1\end{pmatrix}\right\}\) using Gram&ndash;Schmidt followed by normalization.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q6.</span>
+                <strong>(Proof)</strong> Suppose \(\{u_1, \ldots, u_p\}\) is an orthonormal basis for \(W\). Show that the orthogonal projection of any \(y\) onto \(W\) is \(\hat{y} = (u_1 \cdot y)u_1 + \cdots + (u_p \cdot y)u_p\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q7.</span>
+                Is every orthonormal set in \(\mathbb{R}^n\) a subset of some orthonormal basis for \(\mathbb{R}^n\)? Justify briefly.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q8.</span>
+                <strong>(Calculation)</strong> Let \(u_1 = \begin{pmatrix}1/3\\2/3\\2/3\end{pmatrix}\) and \(u_2 = \begin{pmatrix}2/3\\1/3\\-2/3\end{pmatrix}\). Verify these form an orthonormal set. Then find \(\text{proj}_W \begin{pmatrix}3\\0\\0\end{pmatrix}\) where \(W = \text{Span}\{u_1, u_2\}\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q9.</span>
+                <strong>(Proof)</strong> If \(U\) is a square \(n \times n\) matrix with orthonormal columns, prove that \(U^{-1} = U^T\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q10.</span>
+                <strong>(Calculation)</strong> The vectors \(u_1 = \frac{1}{\sqrt{3}}\begin{pmatrix}1\\1\\1\end{pmatrix}\) and \(u_2 = \frac{1}{\sqrt{2}}\begin{pmatrix}1\\-1\\0\end{pmatrix}\) are orthonormal. Find a third unit vector \(u_3\) so that \(\{u_1, u_2, u_3\}\) is an orthonormal basis for \(\mathbb{R}^3\).
+            </div>
+        </div>
+
+        <!-- SOLUTIONS -->
+        <div class="solutions-box">
+            <h3>Solutions</h3>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 2 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: \(U^T U = I\) when columns are orthonormal</h3>
+                    <div class="step">
+                        <p>Let \(u_1, \ldots, u_n\) be the columns of \(U\). The \((i,j)\)-entry of \(U^T U\) is the dot product of column \(i\) and column \(j\) of \(U\), i.e., \(u_i \cdot u_j\).</p>
+                        <p>By orthonormality: \(u_i \cdot u_j = \delta_{ij}\), which is exactly the \((i,j)\)-entry of \(I_n\). Hence \(U^TU = I_n\). ∎</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 3 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: Orthonormal matrices preserve lengths</h3>
+                    <div class="step">
+                        <p>\(\|Ux\|^2 = (Ux)^T(Ux) = x^T U^T U x = x^T I x = x^T x = \|x\|^2\)</p>
+                        <p>Taking square roots: \(\|Ux\| = \|x\|\). ∎</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 4 (Calculation):</span>
+                <div class="step">
+                    <p>For an orthonormal basis, the coordinate formula gives \(c_i = y \cdot u_i\):</p>
+                    <p>\(c_1 = y \cdot u_1 = \frac{1}{\sqrt{2}}(3+7) = \frac{10}{\sqrt{2}} = 5\sqrt{2}\)</p>
+                    <p>\(c_2 = y \cdot u_2 = \frac{1}{\sqrt{2}}(3-7) = \frac{-4}{\sqrt{2}} = -2\sqrt{2}\)</p>
+                    <p>So \(y = 5\sqrt{2}\, u_1 - 2\sqrt{2}\, u_2\).</p>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 6 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: Projection Formula with Orthonormal Basis</h3>
+                    <div class="step">
+                        <p>Since \(\{u_1, \ldots, u_p\}\) is an orthonormal basis for \(W\), the projection is:</p>
+                        <p>\(\hat{y} = \sum_{i=1}^p \frac{y \cdot u_i}{u_i \cdot u_i} u_i\)</p>
+                        <p>Since \(\|u_i\| = 1\), we have \(u_i \cdot u_i = 1\). Hence:</p>
+                        <p>\(\hat{y} = \sum_{i=1}^p (y \cdot u_i) u_i = (u_1 \cdot y)u_1 + \cdots + (u_p \cdot y)u_p\) ∎</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 8 (Calculation):</span>
+                <div class="step">
+                    <div class="step-title">Verify orthonormality:</div>
+                    <p>\(\|u_1\|^2 = \frac{1}{9}+\frac{4}{9}+\frac{4}{9} = 1\) ✓, \(\|u_2\|^2 = \frac{4}{9}+\frac{1}{9}+\frac{4}{9} = 1\) ✓</p>
+                    <p>\(u_1 \cdot u_2 = \frac{2}{9}+\frac{2}{9}-\frac{4}{9} = 0\) ✓</p>
+                </div>
+                <div class="step">
+                    <div class="step-title">Compute projection of \(y = \begin{pmatrix}3\\0\\0\end{pmatrix}\):</div>
+                    <p>\(y \cdot u_1 = 1,\quad y \cdot u_2 = 2\)</p>
+                    <p>\(\hat{y} = 1 \cdot u_1 + 2 \cdot u_2 = \begin{pmatrix}1/3\\2/3\\2/3\end{pmatrix} + \begin{pmatrix}4/3\\2/3\\-4/3\end{pmatrix} = \begin{pmatrix}5/3\\4/3\\-2/3\end{pmatrix}\)</p>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 9 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: \(U^{-1} = U^T\) for orthogonal matrices</h3>
+                    <div class="step">
+                        <p>If \(U\) is square with orthonormal columns, then \(U^T U = I_n\) (proved in Q2). Since \(U\) is \(n \times n\), \(U^T U = I\) implies \(U\) is invertible and \(U^{-1} = U^T\). ∎</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- CONCEPT 4: QR FACTORIZATION                            -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="section" id="sec4">
+        <div class="section-title">Concept 4 &mdash; QR Factorization</div>
+
+        <div class="definition-box">
+            <h3>Definition</h3>
+            <p>The <strong>QR Factorization</strong> of a matrix \(A\) expresses it as a product \(A = QR\), where:</p>
+            <ul style="padding-left: 20px; margin-top: 10px;">
+                <li>\(Q\) is an \(m \times n\) matrix whose columns form an <strong>orthonormal basis</strong> for \(\text{Col}(A)\)</li>
+                <li>\(R\) is an \(n \times n\) <strong>upper triangular</strong> invertible matrix with positive diagonal entries</li>
+            </ul>
+            <p style="margin-top:10px;">The matrix \(R\) can always be recovered by \(R = Q^T A\), since \(Q^T Q = I\).</p>
+        </div>
+
+        <div class="theorem-box">
+            <h3>Theorem 12 &mdash; The QR Factorization</h3>
+            <p>If \(A\) is an \(m \times n\) matrix with <strong>linearly independent columns</strong>, then \(A\) can be factored as \(A = QR\), where:</p>
+            <ul style="padding-left: 20px; margin-top: 8px;">
+                <li>\(Q\) is \(m \times n\) with orthonormal columns forming a basis for \(\text{Col}(A)\)</li>
+                <li>\(R\) is \(n \times n\) upper triangular, invertible, with positive diagonal entries</li>
+            </ul>
+            <p style="margin-top:10px;"><strong>Construction:</strong> Apply Gram&ndash;Schmidt to the columns of \(A\) to get \(Q\), then compute \(R = Q^T A\).</p>
+        </div>
+
+        <div class="note">
+            <strong>Why is \(R\) upper triangular?</strong> Because the Gram&ndash;Schmidt process ensures \(\text{Span}\{u_1, \ldots, u_k\} = \text{Span}\{x_1, \ldots, x_k\}\). So \(x_k\) has no component along \(u_j\) for \(j > k\), making those entries of \(R\) zero.
+        </div>
+
+        <div class="example">
+            <h4>Example: QR Factorization</h4>
+            <p>For \(A = \begin{pmatrix}1&0&0\\1&1&0\\1&1&1\\1&1&1\end{pmatrix}\), apply Gram&ndash;Schmidt to obtain columns of \(Q\), then \(R = Q^T A\).</p>
+            <p style="margin-top:8px;">The result is \(Q = \begin{pmatrix}1/2 & -3/\sqrt{12} & 0\\ 1/2 & 1/\sqrt{12} & -2/\sqrt{6}\\ 1/2 & 1/\sqrt{12} & 1/\sqrt{6}\\ 1/2 & 1/\sqrt{12} & 1/\sqrt{6}\end{pmatrix}\) and \(R = Q^T A\) is upper triangular.</p>
+        </div>
+
+        <!-- QUESTIONS -->
+        <div class="questions-box">
+            <h3>Practice Questions</h3>
+
+            <div class="question-item">
+                <span class="question-number">Q1.</span>
+                <strong>(Calculation)</strong> Find a QR factorization of \(A = \begin{pmatrix}1&1\\1&-1\\1&1\end{pmatrix}\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q2.</span>
+                <strong>(Proof)</strong> Prove that if \(A = QR\) where \(Q\) has orthonormal columns, then \(R = Q^T A\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q3.</span>
+                <strong>(Proof)</strong> Prove that if the columns of \(A\) are linearly independent and \(A = QR\), then \(R\) is invertible.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q4.</span>
+                <strong>(Calculation)</strong> Given \(A = \begin{pmatrix}2&1\\0&3\\0&0\end{pmatrix}\), find its QR factorization.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q5.</span>
+                <strong>(Proof)</strong> Show that \(A\) and \(Q\) have the same column space when \(A = QR\) and \(R\) is invertible.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q6.</span>
+                <strong>(Calculation)</strong> Verify that \(A = \begin{pmatrix}5&9\\1&7\\-3&-5\\1&5\end{pmatrix}\), \(Q = \begin{pmatrix}5/6&-1/6\\1/6&5/6\\-3/6&1/6\\1/6&3/6\end{pmatrix}\) satisfy \(A=QR\) by finding \(R = Q^T A\) and verifying \(R\) is upper triangular.
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q7.</span>
+                Why is it important that the diagonal entries of \(R\) are positive in the QR factorization? What happens if we allow negative diagonals?
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q8.</span>
+                <strong>(Proof)</strong> Show that if \(A = QR\) is a QR factorization and \(A_1\) consists of the first \(p\) columns of \(A\), then \(A_1 = Q_1 R_1\) where \(Q_1\) is the first \(p\) columns of \(Q\) and \(R_1\) is the leading \(p \times p\) submatrix of \(R\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q9.</span>
+                <strong>(Calculation)</strong> Find a QR factorization of \(A = \begin{pmatrix}2&-5\\1&4\\2&-5\end{pmatrix}\).
+            </div>
+
+            <div class="question-item">
+                <span class="question-number">Q10.</span>
+                <strong>(Proof)</strong> Suppose \(A = QR\) where the columns of \(A\) are linearly dependent. Prove that \(R\) cannot be invertible.
+            </div>
+        </div>
+
+        <!-- SOLUTIONS -->
+        <div class="solutions-box">
+            <h3>Solutions</h3>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 1 (Calculation):</span>
+                <div class="step">
+                    <div class="step-title">Step 1: Gram&ndash;Schmidt on columns \(x_1 = \begin{pmatrix}1\\1\\1\end{pmatrix}\), \(x_2 = \begin{pmatrix}1\\-1\\1\end{pmatrix}\):</div>
+                    <p>\(v_1 = x_1\), \(\|v_1\|^2 = 3\)</p>
+                    <p>\(x_2 \cdot v_1 = 1-1+1 = 1\)</p>
+                    <p>\(v_2 = x_2 - \frac{1}{3}v_1 = \begin{pmatrix}2/3\\-4/3\\2/3\end{pmatrix}\), scale: \(\begin{pmatrix}1\\-2\\1\end{pmatrix}\)</p>
+                </div>
+                <div class="step">
+                    <div class="step-title">Step 2: Normalize:</div>
+                    <p>\(u_1 = \frac{1}{\sqrt{3}}\begin{pmatrix}1\\1\\1\end{pmatrix}\), \(\quad u_2 = \frac{1}{\sqrt{6}}\begin{pmatrix}1\\-2\\1\end{pmatrix}\)</p>
+                    <p>\(Q = \begin{pmatrix}1/\sqrt{3} & 1/\sqrt{6}\\ 1/\sqrt{3} & -2/\sqrt{6}\\ 1/\sqrt{3} & 1/\sqrt{6}\end{pmatrix}\)</p>
+                </div>
+                <div class="step">
+                    <div class="step-title">Step 3: Compute \(R = Q^T A\):</div>
+                    <p>\(R = \begin{pmatrix}\sqrt{3} & 1/\sqrt{3}\\ 0 & \sqrt{6}/\sqrt{1}\end{pmatrix}\) (upper triangular) ✓</p>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 2 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: \(R = Q^T A\)</h3>
+                    <div class="step">
+                        <p>Since \(A = QR\), left-multiply both sides by \(Q^T\):</p>
+                        <p>\(Q^T A = Q^T (QR) = (Q^T Q) R = I_n R = R\)</p>
+                        <p>using the fact that \(Q^T Q = I_n\) (since \(Q\) has orthonormal columns). ∎</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 3 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: \(R\) is invertible when columns of \(A\) are linearly independent</h3>
+                    <div class="step">
+                        <div class="step-title">Suppose \(Rx = 0\) for some \(x \in \mathbb{R}^n\).</div>
+                        <p>Then \(A x = Q(Rx) = Q \cdot 0 = 0\).</p>
+                        <p>Since the columns of \(A\) are linearly independent, \(Ax = 0\) implies \(x = 0\).</p>
+                        <p>Therefore \(Rx = 0 \Rightarrow x = 0\), so \(R\) is invertible. ∎</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 5 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: \(\text{Col}(A) = \text{Col}(Q)\)</h3>
+                    <div class="step">
+                        <div class="step-title">\(\text{Col}(A) \subseteq \text{Col}(Q)\):</div>
+                        <p>Let \(y \in \text{Col}(A)\). Then \(y = Ax = QRx = Q(Rx)\), so \(y = Qz\) where \(z = Rx\). Hence \(y \in \text{Col}(Q)\).</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-title">\(\text{Col}(Q) \subseteq \text{Col}(A)\):</div>
+                        <p>Let \(y \in \text{Col}(Q)\). Then \(y = Qz\) for some \(z\). Since \(R\) is invertible, \(z = Rx\) for some \(x\), so \(y = QRx = Ax \in \text{Col}(A)\). ∎</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="solution-item">
+                <span class="solution-number">Solution 10 (Proof):</span>
+                <div class="proof-box">
+                    <h3>Proof: Dependent columns ⟹ \(R\) is not invertible</h3>
+                    <div class="step">
+                        <p>Since the columns of \(A\) are linearly dependent, there exists a nonzero vector \(x\) such that \(Ax = 0\).</p>
+                        <p>From \(A = QR\): \(0 = Ax = QRx\).</p>
+                        <p>Since \(Q\) has orthonormal columns, its columns are linearly independent, so \(Q\) is injective. Thus \(QRx = 0 \Rightarrow Rx = 0\).</p>
+                        <p>Since \(x \neq 0\) and \(Rx = 0\), the matrix \(R\) has a nontrivial null space, so \(R\) is not invertible. ∎</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="margin-top:40px; padding:20px; text-align:center; font-size:0.9rem; color:#666; background:white; border-radius:8px; box-shadow:0 2px 4px rgba(0,0,0,0.1);">
+        Linear Algebra &mdash; Chapter 6.4 &nbsp;|&nbsp; Gram&ndash;Schmidt Process &amp; QR Factorization &nbsp;|&nbsp; Study Notes
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var solutions = document.querySelectorAll('.solution-item');
+            solutions.forEach(function (solution) {
+                solution.classList.add('hidden');
+
+                var answerLabel = 'Solution';
+                var numberEl = solution.querySelector('.solution-number');
+                if (numberEl && numberEl.textContent.trim().length > 0) {
+                    var match = numberEl.textContent.trim().match(/Solution\s*(\d+)/i);
+                    if (match) {
+                        answerLabel = 'Solution ' + match[1];
+                    }
+                }
+
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = 'Show ' + answerLabel;
+                button.style.display = 'inline-block';
+                button.style.margin = '10px 0';
+                button.style.padding = '8px 14px';
+                button.style.border = '2px solid #059669';
+                button.style.borderRadius = '8px';
+                button.style.background = 'white';
+                button.style.color = '#202020';
+                button.style.cursor = 'pointer';
+                button.style.fontWeight = '600';
+                button.style.transition = 'all 0.2s ease';
+
+                button.addEventListener('mouseenter', function () {
+                    button.style.background = '#059669';
+                    button.style.color = 'white';
+                });
+
+                button.addEventListener('mouseleave', function () {
+                    if (solution.classList.contains('hidden')) {
+                        button.style.background = 'white';
+                        button.style.color = '#202020';
+                    } else {
+                        button.style.background = '#059669';
+                        button.style.color = 'white';
+                    }
+                });
+
+                button.addEventListener('click', function () {
+                    var isHidden = solution.classList.toggle('hidden');
+                    button.textContent = (isHidden ? 'Show ' : 'Hide ') + answerLabel;
+                    button.style.background = isHidden ? 'white' : '#059669';
+                    button.style.color = isHidden ? '#202020' : 'white';
+                });
+
+                solution.parentNode.insertBefore(button, solution);
+            });
+        });
+    </script>
+</div>
+</body>
+</html>

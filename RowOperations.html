@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Algebra - Study Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-color: #202020;
+            --secondary-color: #0085FF;
+            --accent-color: #FFCC5D;
+            --definition-bg: #E8F4FD;
+            --definition-border: #0085FF;
+            --question-bg: #FFF9E6;
+            --question-border: #FFCC5D;
+            --solution-bg: #F0F9FF;
+            --solution-border: #60A5FA;
+            --proof-bg: #F3E8FF;
+            --proof-border: #A78BFA;
+        }
+
+        /* Core Body & Container */
+        body { font-family: 'Poppins', sans-serif !important; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%) !important; color: var(--primary-color) !important; line-height: 1.6 !important; padding: 20px !important; }
+        .container, main.max-w-5xl, main.max-w-4xl { max-width: 1200px !important; margin: 0 auto !important; background: white !important; border-radius: 16px !important; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1) !important; overflow: visible !important; padding: 40px !important; }
+        
+        /* Headers */
+        .header, header.bg-indigo-900, header.bg-blue-700 { background: linear-gradient(135deg, var(--primary-color) 0%, #4D4D4D 100%) !important; color: white !important; padding: 40px !important; border-radius: 16px 16px 0 0 !important; text-align: center !important; margin: -40px -40px 40px -40px !important; box-shadow: none !important; border: none !important; }
+        .header h1, header h1 { font-size: 2.5rem !important; font-weight: 700 !important; margin: 0 0 10px 0 !important; color: white !important; }
+        .header p, header p { font-size: 1.1rem !important; opacity: 0.9 !important; margin: 0 !important; color: white !important; font-style: normal !important; }
+        
+        /* Table of Contents */
+        .toc { background: #F9FAFB !important; border: 2px solid var(--secondary-color) !important; border-radius: 12px !important; padding: 30px !important; margin-bottom: 40px !important; box-shadow: none !important; }
+        .toc h2 { color: var(--secondary-color) !important; font-size: 1.8rem !important; margin-bottom: 20px !important; font-weight: 600 !important; border: none !important; padding: 0 !important; }
+        .toc ul { list-style: none !important; padding: 0 !important; }
+        .toc li { margin: 12px 0 !important; padding: 0 !important; }
+        .toc li:before { content: "" !important; display: none !important; }
+        .toc a { color: var(--primary-color) !important; text-decoration: none !important; font-size: 1.1rem !important; font-weight: 500 !important; transition: all 0.3s ease !important; display: block !important; padding: 10px 15px !important; border-radius: 8px !important; }
+        .toc a:hover { background: var(--secondary-color) !important; color: white !important; transform: translateX(10px) !important; }
+        
+        /* Main Sections */
+        .concept-section, .section, .concept-card { margin: 50px 0 !important; padding: 0 !important; box-shadow: none !important; border: none !important; background: transparent !important; }
+        .section-title, .concept-card h2 { color: var(--primary-color) !important; font-size: 2rem !important; font-weight: 700 !important; margin-bottom: 25px !important; padding-bottom: 15px !important; border-bottom: 4px solid var(--secondary-color) !important; }
+        
+        /* Content Boxes (Definitions, Theorems, Examples) */
+        .definition-box, .theorem-box, .example, .bg-indigo-50, .bg-blue-50 { background: var(--definition-bg) !important; border: none !important; border-left: 6px solid var(--definition-border) !important; border-radius: 8px !important; padding: 25px !important; margin: 25px 0 !important; box-shadow: 0 4px 6px rgba(0, 133, 255, 0.1) !important; }
+        .definition-box h3, .theorem-box h3, .example h4, .concept-title, .bg-indigo-50 h3 { color: var(--secondary-color) !important; font-size: 1.4rem !important; font-weight: 600 !important; margin-top: 0 !important; margin-bottom: 15px !important; background: none !important; border: none !important; padding: 0 !important; text-decoration: none !important; }
+        .formula { background: white !important; border: 2px dashed var(--secondary-color) !important; border-radius: 8px !important; padding: 15px !important; margin: 15px 0 !important; font-family: 'Courier New', monospace !important; font-size: 1.1rem !important; text-align: center !important; font-weight: 500 !important; overflow-x: auto !important; }
+        
+        /* Wrappers to clean up structural differences */
+        .questions-box, .solutions-box { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; margin: 0 !important; }
+        .questions-box h3, .solutions-box h3 { color: var(--primary-color) !important; font-size: 1.5rem !important; margin-top: 40px !important; margin-bottom: 20px !important; border: none !important; padding: 0 !important; }
+        
+        /* Questions & Solutions Mappings */
+        .question-block, .question-item, .border-b { background: var(--question-bg) !important; border: none !important; border-left: 6px solid var(--question-border) !important; border-radius: 8px !important; padding: 20px !important; margin: 20px 0 !important; box-shadow: 0 4px 6px rgba(255, 204, 93, 0.1) !important; display: block !important; }
+        .question-block h4, .question-number, .font-medium { color: #D97706 !important; font-weight: 600 !important; margin-top: 0 !important; margin-bottom: 12px !important; font-size: 1.2rem !important; display: block !important; border: none !important; }
+        .solution-block, .solution-item, .solution-content, .solution { background: var(--solution-bg) !important; border: none !important; border-left: 6px solid var(--solution-border) !important; border-radius: 8px !important; padding: 20px !important; margin: 15px 0 30px 0 !important; box-shadow: 0 4px 6px rgba(96, 165, 250, 0.1) !important; display: block; }
+        .solution-block.hidden, .solution-item.hidden, .solution-content.hidden, .solution.hidden { display: none !important; }
+        .solution-block h4, .solution-number { color: #2563EB !important; font-weight: 600 !important; margin-top: 0 !important; margin-bottom: 15px !important; font-size: 1.1rem !important; display: block !important; }
+        
+        /* Proofs & Steps */
+        .proof-block, .proof-box { background: var(--proof-bg) !important; border: none !important; border-left: 6px solid var(--proof-border) !important; border-radius: 8px !important; padding: 20px !important; margin: 15px 0 !important; box-shadow: 0 4px 6px rgba(167, 139, 250, 0.1) !important; }
+        .proof-box h3 { color: #9333ea !important; font-weight: 600 !important; margin-bottom: 15px !important; font-size: 1.2rem !important; border: none !important; }
+        .step { margin: 15px 0 !important; padding-left: 20px !important; border-left: 3px solid #CBD5E1 !important; }
+        .step-label, .step-title { font-weight: 600 !important; color: var(--secondary-color) !important; margin-bottom: 8px !important; }
+        .note { background: #FEF3C7 !important; border-left: 4px solid #F59E0B !important; padding: 15px !important; margin: 15px 0 !important; border-radius: 6px !important; font-style: italic !important; }
+        .highlight { background: var(--accent-color) !important; padding: 2px 6px !important; border-radius: 4px !important; font-weight: 600 !important; }
+
+        /* Hide Old Toggles */
+        input[type="checkbox"].show-sol, input[type="checkbox"].show-solution, label[for^="v"], label[for^="s"], label[for^="m"], label[for^="sol"] { display: none !important; }
+    </style>
+    
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                packages: {'[+]': ['ams']}
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var solutions = document.querySelectorAll('.solution-block, .solution-item, .solution-content, .solution');
+            
+            solutions.forEach(function (solution) {
+                solution.classList.add('hidden');
+
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = 'Show Solution';
+                button.style.display = 'inline-block';
+                button.style.margin = '10px 0';
+                button.style.padding = '10px 16px';
+                button.style.border = '2px solid var(--secondary-color)';
+                button.style.borderRadius = '8px';
+                button.style.background = 'white';
+                button.style.color = 'var(--primary-color)';
+                button.style.cursor = 'pointer';
+                button.style.fontWeight = '600';
+                button.style.transition = 'all 0.2s ease';
+
+                button.addEventListener('mouseenter', function () {
+                    button.style.background = 'var(--secondary-color)';
+                    button.style.color = 'white';
+                });
+                button.addEventListener('mouseleave', function () {
+                    if(solution.classList.contains('hidden')) {
+                        button.style.background = 'white';
+                        button.style.color = 'var(--primary-color)';
+                    } else {
+                        button.style.background = 'var(--secondary-color)';
+                        button.style.color = 'white';
+                    }
+                });
+
+                button.addEventListener('click', function () {
+                    var isHidden = solution.classList.toggle('hidden');
+                    button.textContent = isHidden ? 'Show Solution' : 'Hide Solution';
+                    button.style.background = isHidden ? 'white' : 'var(--secondary-color)';
+                    button.style.color = isHidden ? 'var(--primary-color)' : 'white';
+                });
+
+                solution.parentNode.insertBefore(button, solution);
+            });
+        });
+    </script>
+</head>
+<body class="bg-gray-50 text-gray-900 leading-relaxed">
+
+    <header class="bg-blue-700 text-white py-12 px-4 shadow-lg mb-8">
+        <div class="max-w-4xl mx-auto text-center">
+            <h1 class="text-4xl font-bold mb-2">Linear Algebra: Chapter 7 Summary</h1>
+            <p class="text-blue-100 text-lg">Matrices, Vectors, Determinants, and Linear Systems</p>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-4 pb-20">
+
+        <section class="mb-12">
+            <div class="concept-card bg-white p-6 rounded-lg shadow-md mb-6">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">1. Matrix Addition and Scalar Multiplication</h2>
+                <p class="mb-4">
+                    A <strong>matrix</strong> is a rectangular array of numbers. Addition is defined only for matrices of the same size $(m \times n)$, performed entry-wise: $[a_{jk}] + [b_{jk}] = [a_{jk} + b_{jk}]$. 
+                    <strong>Scalar multiplication</strong> multiplies every entry by a constant $k$: $k[a_{jk}] = [ka_{jk}]$.
+                </p>
+                
+                <h3 class="text-xl font-semibold mt-6 mb-3 border-b pb-1">Practice Questions</h3>
+                <div class="space-y-6">
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">1. Calculate $2A - B$ given $A = \begin{bmatrix} 1 & 2 \\ 0 & -1 \end{bmatrix}$ and $B = \begin{bmatrix} 5 & 2 \\ 1 & 3 \end{bmatrix}$.</p>
+                        <input type="checkbox" id="sol1-1" class="hidden show-solution">
+                        <label for="sol1-1" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Multiply $A$ by scalar 2: $2A = \begin{bmatrix} 2(1) & 2(2) \\ 2(0) & 2(-1) \end{bmatrix} = \begin{bmatrix} 2 & 4 \\ 0 & -2 \end{bmatrix}$.</p>
+                            <p><strong>Step 2:</strong> Subtract $B$ from $2A$ entry-wise: $\begin{bmatrix} 2-5 & 4-2 \\ 0-1 & -2-3 \end{bmatrix}$.</p>
+                            <p><strong>Step 3:</strong> Simplify to get final answer: $\begin{bmatrix} -3 & 2 \\ -1 & -5 \end{bmatrix}$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">2. Let $C$ be a $3 \times 2$ matrix. If $3C + \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 2 & 2 \end{bmatrix} = \begin{bmatrix} 4 & 3 \\ 3 & 7 \\ 8 & 5 \end{bmatrix}$, find $C$.</p>
+                        <input type="checkbox" id="sol1-2" class="hidden show-solution">
+                        <label for="sol1-2" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Isolate $3C$ by subtracting the matrix from both sides: $3C = \begin{bmatrix} 4 & 3 \\ 3 & 7 \\ 8 & 5 \end{bmatrix} - \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ 2 & 2 \end{bmatrix}$.</p>
+                            <p><strong>Step 2:</strong> Perform subtraction: $3C = \begin{bmatrix} 4-1 & 3-0 \\ 3-0 & 7-1 \\ 8-2 & 5-2 \end{bmatrix} = \begin{bmatrix} 3 & 3 \\ 3 & 6 \\ 6 & 3 \end{bmatrix}$.</p>
+                            <p><strong>Step 3:</strong> Multiply by scalar $\frac{1}{3}$: $C = \begin{bmatrix} 1 & 1 \\ 1 & 2 \\ 2 & 1 \end{bmatrix}$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">3. Deduction: Is it true that $(k+m)A = kA + mA$ for any scalar $k, m$ and matrix $A$? Prove it.</p>
+                        <input type="checkbox" id="sol1-3" class="hidden show-solution">
+                        <label for="sol1-3" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Let $A = [a_{jk}]$. The left side is $(k+m)A = [(k+m)a_{jk}]$.</p>
+                            <p><strong>Step 2:</strong> Apply the distributive law for real numbers to the entries: $[ka_{jk} + ma_{jk}]$.</p>
+                            <p><strong>Step 3:</strong> By definition of matrix addition, split the matrix: $[ka_{jk}] + [ma_{jk}]$.</p>
+                            <p><strong>Step 4:</strong> By definition of scalar multiplication, this is $kA + mA$. Yes, it is true.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">4. Proof: Show that matrix addition is commutative ($A + B = B + A$).</p>
+                        <input type="checkbox" id="sol1-4" class="hidden show-solution">
+                        <label for="sol1-4" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Define $A = [a_{jk}]$ and $B = [b_{jk}]$.</p>
+                            <p><strong>Step 2:</strong> By definition, $A + B = [a_{jk} + b_{jk}]$.</p>
+                            <p><strong>Step 3:</strong> Since $a_{jk}$ and $b_{jk}$ are real numbers, and addition in $\mathbb{R}$ is commutative, $a_{jk} + b_{jk} = b_{jk} + a_{jk}$.</p>
+                            <p><strong>Step 4:</strong> Therefore, $[a_{jk} + b_{jk}] = [b_{jk} + a_{jk}] = B + A$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">5. Deduction: If $A+B=0$, prove $B = -1 \cdot A$.</p>
+                        <input type="checkbox" id="sol1-5" class="hidden show-solution">
+                        <label for="sol1-5" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Start with matrix entries: $[a_{jk}] + [b_{jk}] = [0]$.</p>
+                            <p><strong>Step 2:</strong> This implies entry-wise $a_{jk} + b_{jk} = 0$ for all $j, k$.</p>
+                            <p><strong>Step 3:</strong> Rearranging gives $b_{jk} = -a_{jk}$.</p>
+                            <p><strong>Step 4:</strong> Rewrite $B$: $B = [b_{jk}] = [-a_{jk}] = -1 \cdot [a_{jk}] = -1 \cdot A$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">6. Compute the trace of $A = \begin{bmatrix} 4 & 1 \\ 2 & 3 \end{bmatrix}$ where $Tr(A) = \sum a_{ii}$.</p>
+                        <input type="checkbox" id="sol1-6" class="hidden show-solution">
+                        <label for="sol1-6" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Identify the main diagonal entries where row index equals column index ($a_{11}$ and $a_{22}$).</p>
+                            <p><strong>Step 2:</strong> Here, $a_{11} = 4$ and $a_{22} = 3$.</p>
+                            <p><strong>Step 3:</strong> Sum the diagonal entries: $4 + 3 = 7$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">7. Find variables $x, y$ if $\begin{bmatrix} x+y \\ x-y \end{bmatrix} = \begin{bmatrix} 10 \\ 2 \end{bmatrix}$.</p>
+                        <input type="checkbox" id="sol1-7" class="hidden show-solution">
+                        <label for="sol1-7" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Equate corresponding entries to form a system: $x+y=10$ and $x-y=2$.</p>
+                            <p><strong>Step 2:</strong> Add the two equations: $(x+y) + (x-y) = 10 + 2 \implies 2x = 12 \implies x=6$.</p>
+                            <p><strong>Step 3:</strong> Substitute $x=6$ into the first equation: $6+y=10 \implies y=4$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">8. Deduction: Prove that $k(A+B) = kA + kB$.</p>
+                        <input type="checkbox" id="sol1-8" class="hidden show-solution">
+                        <label for="sol1-8" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Left side is $k([a_{jk}] + [b_{jk}]) = k[a_{jk} + b_{jk}]$.</p>
+                            <p><strong>Step 2:</strong> By scalar multiplication, this equals $[k(a_{jk} + b_{jk})]$.</p>
+                            <p><strong>Step 3:</strong> Apply distributive law for real numbers: $[ka_{jk} + kb_{jk}]$.</p>
+                            <p><strong>Step 4:</strong> Split into two matrices: $[ka_{jk}] + [kb_{jk}] = kA + kB$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">9. Deduction: If $A$ is an $m \times n$ matrix, what are the dimensions of $k A^T$?</p>
+                        <input type="checkbox" id="sol1-9" class="hidden show-solution">
+                        <label for="sol1-9" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> The transpose operation $A^T$ swaps rows and columns.</p>
+                            <p><strong>Step 2:</strong> An $m \times n$ matrix becomes an $n \times m$ matrix.</p>
+                            <p><strong>Step 3:</strong> Scalar multiplication ($k$) does not change matrix dimensions. The dimensions remain $n \times m$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">10. Calculate $A + B$ if $A = [1, 2, 3]$ and $B = [4, 5, 6]$.</p>
+                        <input type="checkbox" id="sol1-10" class="hidden show-solution">
+                        <label for="sol1-10" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Ensure matrices are same size. Both are $1 \times 3$ row vectors. Addition is valid.</p>
+                            <p><strong>Step 2:</strong> Add corresponding entries: $[1+4, 2+5, 3+6]$.</p>
+                            <p><strong>Step 3:</strong> Final matrix is $[5, 7, 9]$.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <div class="concept-card bg-white p-6 rounded-lg shadow-md mb-6">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">2. Rank and Linear Independence</h2>
+                <p class="mb-4">
+                    The <strong>rank</strong> of a matrix $A$ is the maximum number of linearly independent row vectors (or column vectors). 
+                    Vectors $v_1, \dots, v_k$ are <strong>linearly independent</strong> if $c_1v_1 + \dots + c_kv_k = 0$ implies all $c_i = 0$.
+                </p>
+                
+                <h3 class="text-xl font-semibold mt-6 mb-3 border-b pb-1">Practice Questions</h3>
+                <div class="space-y-6">
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">1. Find the rank of $A = \begin{bmatrix} 1 & 2 & 3 \\ 2 & 4 & 6 \\ 0 & 1 & 1 \end{bmatrix}$.</p>
+                        <input type="checkbox" id="sol2-1" class="hidden show-solution">
+                        <label for="sol2-1" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Use row reduction. Notice that Row 2 is exactly 2 times Row 1.</p>
+                            <p><strong>Step 2:</strong> Apply operation $R_2 \to R_2 - 2R_1$. Matrix becomes $\begin{bmatrix} 1 & 2 & 3 \\ 0 & 0 & 0 \\ 0 & 1 & 1 \end{bmatrix}$.</p>
+                            <p><strong>Step 3:</strong> Swap $R_2$ and $R_3$ to get $\begin{bmatrix} 1 & 2 & 3 \\ 0 & 1 & 1 \\ 0 & 0 & 0 \end{bmatrix}$.</p>
+                            <p><strong>Step 4:</strong> There are 2 non-zero rows. Therefore, $rank(A) = 2$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">2. Are the vectors $v_1=[1, 0, 0], v_2=[0, 1, 0], v_3=[1, 1, 0]$ linearly independent?</p>
+                        <input type="checkbox" id="sol2-2" class="hidden show-solution">
+                        <label for="sol2-2" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Set up the equation $c_1v_1 + c_2v_2 + c_3v_3 = \mathbf{0}$.</p>
+                            <p><strong>Step 2:</strong> Notice by observation that $v_3 = v_1 + v_2$.</p>
+                            <p><strong>Step 3:</strong> Therefore, $1(v_1) + 1(v_2) - 1(v_3) = \mathbf{0}$.</p>
+                            <p><strong>Step 4:</strong> We found non-zero coefficients ($c_1=1, c_2=1, c_3=-1$). They are linearly dependent.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">3. Proof: Show that if a set of vectors contains the zero vector, it is linearly dependent.</p>
+                        <input type="checkbox" id="sol2-3" class="hidden show-solution">
+                        <label for="sol2-3" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Let the set be $\{v_1, v_2, \dots, v_n\}$ where $v_1 = \mathbf{0}$.</p>
+                            <p><strong>Step 2:</strong> Consider the linear combination equation $c_1v_1 + c_2v_2 + \dots + c_nv_n = \mathbf{0}$.</p>
+                            <p><strong>Step 3:</strong> Choose $c_1 = 1$ (or any non-zero number) and $c_2 = c_3 = \dots = c_n = 0$.</p>
+                            <p><strong>Step 4:</strong> Then $1(\mathbf{0}) + 0(v_2) + \dots + 0 = \mathbf{0}$ is a valid solution where not all coefficients are zero.</p>
+                            <p><strong>Step 5:</strong> By definition, the set is linearly dependent.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">4. Calculate the rank of a $4 \times 4$ identity matrix.</p>
+                        <input type="checkbox" id="sol2-4" class="hidden show-solution">
+                        <label for="sol2-4" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> The identity matrix $I_4$ is already in row-reduced echelon form.</p>
+                            <p><strong>Step 2:</strong> It has 1s on the main diagonal and 0s elsewhere.</p>
+                            <p><strong>Step 3:</strong> Therefore, there are exactly 4 non-zero rows.</p>
+                            <p><strong>Step 4:</strong> Rank is the number of non-zero rows, so $rank(I_4) = 4$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">5. Deduction: If $rank(A) = r$, what is the maximum possible value for $r$ if $A$ is $3 \times 5$?</p>
+                        <input type="checkbox" id="sol2-5" class="hidden show-solution">
+                        <label for="sol2-5" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Rank represents the maximum number of linearly independent rows OR columns.</p>
+                            <p><strong>Step 2:</strong> The number of independent rows cannot exceed the total number of rows (3).</p>
+                            <p><strong>Step 3:</strong> The number of independent columns cannot exceed the total number of columns (5).</p>
+                            <p><strong>Step 4:</strong> Therefore, maximum rank $\le \min(3, 5)$. The maximum value is 3.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">6. Proof: Prove $rank(A) = rank(A^T)$.</p>
+                        <input type="checkbox" id="sol2-6" class="hidden show-solution">
+                        <label for="sol2-6" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> By definition, $rank(A)$ is the maximum number of linearly independent row vectors in $A$ (Row Rank).</p>
+                            <p><strong>Step 2:</strong> The columns of $A^T$ are exactly the rows of $A$. So the maximum number of linearly independent columns in $A^T$ is $rank(A)$.</p>
+                            <p><strong>Step 3:</strong> By a fundamental theorem of linear algebra, row rank always equals column rank for any matrix.</p>
+                            <p><strong>Step 4:</strong> Thus, the column rank of $A^T$ is equal to its row rank, meaning $rank(A^T) = rank(A)$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">7. Determine if $v_1=[1,1]$ and $v_2=[1,-1]$ form a basis for $\mathbb{R}^2$.</p>
+                        <input type="checkbox" id="sol2-7" class="hidden show-solution">
+                        <label for="sol2-7" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> A basis for $\mathbb{R}^2$ requires 2 linearly independent vectors.</p>
+                            <p><strong>Step 2:</strong> Set up equation: $c_1[1,1] + c_2[1,-1] = [0,0]$.</p>
+                            <p><strong>Step 3:</strong> This gives system: $c_1+c_2=0$ and $c_1-c_2=0$. Adding them gives $2c_1 = 0 \implies c_1=0$, and thus $c_2=0$.</p>
+                            <p><strong>Step 4:</strong> Since the only solution is trivial, they are independent. Since there are 2 vectors in a 2D space, they form a basis.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">8. Solve $Ax=0$ for $A = \begin{bmatrix} 1 & 1 \\ 2 & 2 \end{bmatrix}$.</p>
+                        <input type="checkbox" id="sol2-8" class="hidden show-solution">
+                        <label for="sol2-8" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Write as equations: $x_1 + x_2 = 0$ and $2x_1 + 2x_2 = 0$.</p>
+                            <p><strong>Step 2:</strong> The second equation is simply twice the first, so we only need $x_1 + x_2 = 0$.</p>
+                            <p><strong>Step 3:</strong> Solve for $x_1$ in terms of $x_2$: $x_1 = -x_2$.</p>
+                            <p><strong>Step 4:</strong> The general solution is vector $x = c[-1, 1]^T$ for any arbitrary scalar $c$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">9. Deduction: If $A$ is an $n \times n$ matrix and $rank(A) < n$, does $A^{-1}$ exist?</p>
+                        <input type="checkbox" id="sol2-9" class="hidden show-solution">
+                        <label for="sol2-9" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> If $rank(A) < n$, the rows of $A$ are not all linearly independent.</p>
+                            <p><strong>Step 2:</strong> By determinant properties, if rows are linearly dependent, $det(A) = 0$.</p>
+                            <p><strong>Step 3:</strong> An inverse $A^{-1}$ only exists if and only if $det(A) \neq 0$.</p>
+                            <p><strong>Step 4:</strong> Therefore, $A^{-1}$ does NOT exist. The matrix is singular.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">10. Find $k$ such that $[1, k]$ and $[4, 8]$ are linearly dependent.</p>
+                        <input type="checkbox" id="sol2-10" class="hidden show-solution">
+                        <label for="sol2-10" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> For two vectors to be dependent, one must be a scalar multiple of the other.</p>
+                            <p><strong>Step 2:</strong> Let $c[1, k] = [4, 8]$.</p>
+                            <p><strong>Step 3:</strong> This means $c(1) = 4$ and $c(k) = 8$.</p>
+                            <p><strong>Step 4:</strong> From the first equation, $c = 4$. Substituting into the second, $4k = 8 \implies k = 2$.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <div class="concept-card bg-white p-6 rounded-lg shadow-md mb-6">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">3. Systems of Linear Equations</h2>
+                <p class="mb-4">
+                    A system $Ax = b$ is <strong>consistent</strong> if $rank(A) = rank([A|b])$. 
+                    <strong>Gauss Elimination</strong> uses row operations to transform the augmented matrix into row-echelon form to find solutions.
+                </p>
+                
+                <h3 class="text-xl font-semibold mt-6 mb-3 border-b pb-1">Practice Questions</h3>
+                <div class="space-y-6">
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">1. Solve using Gauss: $x + y = 5$ and $x - y = 1$.</p>
+                        <input type="checkbox" id="sol3-1" class="hidden show-solution">
+                        <label for="sol3-1" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Form augmented matrix: $\left[\begin{array}{cc|c} 1 & 1 & 5 \\ 1 & -1 & 1 \end{array}\right]$.</p>
+                            <p><strong>Step 2:</strong> Perform $R_2 \to R_2 - R_1$ to eliminate $x$: $\left[\begin{array}{cc|c} 1 & 1 & 5 \\ 0 & -2 & -4 \end{array}\right]$.</p>
+                            <p><strong>Step 3:</strong> Back-substitute: $-2y = -4 \implies y = 2$.</p>
+                            <p><strong>Step 4:</strong> Substitute $y$ into $R_1$: $x + 2 = 5 \implies x = 3$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">2. Determine the consistency of $x+y=2$ and $2x+2y=5$.</p>
+                        <input type="checkbox" id="sol3-2" class="hidden show-solution">
+                        <label for="sol3-2" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Form augmented matrix: $\left[\begin{array}{cc|c} 1 & 1 & 2 \\ 2 & 2 & 5 \end{array}\right]$.</p>
+                            <p><strong>Step 2:</strong> Perform $R_2 \to R_2 - 2R_1$: $\left[\begin{array}{cc|c} 1 & 1 & 2 \\ 0 & 0 & 1 \end{array}\right]$.</p>
+                            <p><strong>Step 3:</strong> The second row translates to $0x + 0y = 1$, which is impossible ($0=1$).</p>
+                            <p><strong>Step 4:</strong> Furthermore, $rank(A)=1 \neq rank([A|b])=2$. The system is inconsistent (no solutions).</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">3. Deduction: Show that a homogeneous system $Ax=0$ always has at least one solution.</p>
+                        <input type="checkbox" id="sol3-3" class="hidden show-solution">
+                        <label for="sol3-3" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Consider the vector $x = \mathbf{0}$ (the vector where every entry is zero).</p>
+                            <p><strong>Step 2:</strong> Evaluate the matrix multiplication $A \cdot \mathbf{0}$. Every term in the resulting vector is a sum of products with zero.</p>
+                            <p><strong>Step 3:</strong> Thus, $A \cdot \mathbf{0} = \mathbf{0}$ regardless of the entries in $A$.</p>
+                            <p><strong>Step 4:</strong> Because this holds true, $x=\mathbf{0}$ is always a solution (known as the trivial solution).</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">4. Solve: $x_1 + x_2 + x_3 = 3$, $x_2 + x_3 = 2$, and $x_3 = 1$.</p>
+                        <input type="checkbox" id="sol3-4" class="hidden show-solution">
+                        <label for="sol3-4" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> The system is already in row-echelon form. Start from bottom (back substitution): $x_3 = 1$.</p>
+                            <p><strong>Step 2:</strong> Substitute $x_3$ into equation 2: $x_2 + 1 = 2 \implies x_2 = 1$.</p>
+                            <p><strong>Step 3:</strong> Substitute both into equation 1: $x_1 + 1 + 1 = 3 \implies x_1 = 1$.</p>
+                            <p><strong>Step 4:</strong> The unique solution is $x_1=1, x_2=1, x_3=1$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">5. Deduction: Under what condition does an $n \times n$ system $Ax=b$ have a unique solution?</p>
+                        <input type="checkbox" id="sol3-5" class="hidden show-solution">
+                        <label for="sol3-5" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> A system has a unique solution if there are no free variables after Gaussian elimination.</p>
+                            <p><strong>Step 2:</strong> This requires the rank of coefficient matrix $A$ to equal the number of unknowns ($n$).</p>
+                            <p><strong>Step 3:</strong> A square matrix has full rank if and only if its determinant is non-zero ($det(A) \neq 0$).</p>
+                            <p><strong>Step 4:</strong> Equivalently, the matrix $A$ must be invertible, allowing $x = A^{-1}b$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">6. Use Cramer's Rule to solve $2x+y=4$ and $x+2y=5$.</p>
+                        <input type="checkbox" id="sol3-6" class="hidden show-solution">
+                        <label for="sol3-6" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Find the main determinant $D = det\begin{bmatrix} 2 & 1 \\ 1 & 2 \end{bmatrix} = 4 - 1 = 3$.</p>
+                            <p><strong>Step 2:</strong> Replace col 1 with constants to find $D_x = det\begin{bmatrix} 4 & 1 \\ 5 & 2 \end{bmatrix} = 8 - 5 = 3$.</p>
+                            <p><strong>Step 3:</strong> Replace col 2 with constants to find $D_y = det\begin{bmatrix} 2 & 4 \\ 1 & 5 \end{bmatrix} = 10 - 4 = 6$.</p>
+                            <p><strong>Step 4:</strong> Solve: $x = D_x/D = 3/3 = 1$ and $y = D_y/D = 6/3 = 2$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">7. Proof: If $x_1$ and $x_2$ are solutions to $Ax=0$, show $c_1x_1 + c_2x_2$ is also a solution.</p>
+                        <input type="checkbox" id="sol3-7" class="hidden show-solution">
+                        <label for="sol3-7" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> By the premise, we know $Ax_1 = 0$ and $Ax_2 = 0$.</p>
+                            <p><strong>Step 2:</strong> Substitute the linear combination into the system: $A(c_1x_1 + c_2x_2)$.</p>
+                            <p><strong>Step 3:</strong> Distribute matrix $A$: $= A(c_1x_1) + A(c_2x_2) = c_1(Ax_1) + c_2(Ax_2)$.</p>
+                            <p><strong>Step 4:</strong> Substitute the known values: $= c_1(0) + c_2(0) = 0$. Thus, it is a solution.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">8. Deduction: Explain conceptually what an augmented matrix is.</p>
+                        <input type="checkbox" id="sol3-8" class="hidden show-solution">
+                        <label for="sol3-8" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Consider a linear system $Ax=b$.</p>
+                            <p><strong>Step 2:</strong> To solve this simultaneously, we need the coefficients of the variables ($A$) and the constants on the right side ($b$).</p>
+                            <p><strong>Step 3:</strong> An augmented matrix $[A|b]$ simply appends vector $b$ as an extra column to $A$.</p>
+                            <p><strong>Step 4:</strong> This allows us to perform row operations on both sides of the equation simultaneously without writing the variables explicitly.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">9. How many possible numbers of solutions can a linear system have? List them.</p>
+                        <input type="checkbox" id="sol3-9" class="hidden show-solution">
+                        <label for="sol3-9" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> A linear system involves intersecting lines/planes.</p>
+                            <p><strong>Step 2:</strong> They can have exactly 0 solutions (inconsistent, parallel lines).</p>
+                            <p><strong>Step 3:</strong> They can have exactly 1 solution (unique, single intersection point).</p>
+                            <p><strong>Step 4:</strong> They can have infinitely many solutions ($\infty$) (dependent, overlapping lines/planes).</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">10. Solve for variables $x, y, z$: $x+y+z=6$, $y+z=5$, and $z=3$.</p>
+                        <input type="checkbox" id="sol3-10" class="hidden show-solution">
+                        <label for="sol3-10" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Start with the simplest equation at the bottom: $z = 3$.</p>
+                            <p><strong>Step 2:</strong> Substitute $z$ into the middle equation: $y + 3 = 5 \implies y = 2$.</p>
+                            <p><strong>Step 3:</strong> Substitute both $y$ and $z$ into the top equation: $x + 2 + 3 = 6 \implies x + 5 = 6$.</p>
+                            <p><strong>Step 4:</strong> Final solution: $x = 1$, $y = 2$, $z = 3$.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <div class="concept-card bg-white p-6 rounded-lg shadow-md mb-6">
+                <h2 class="text-2xl font-bold text-blue-700 mb-4">4. Determinants and Inverses</h2>
+                <p class="mb-4">
+                    The <strong>determinant</strong> $det(A)$ is a scalar value that characterizes square matrices. 
+                    $A^{-1}$ exists if and only if $det(A) \neq 0$. 
+                    Formula for $2 \times 2$: $A^{-1} = \frac{1}{ad-bc} \begin{bmatrix} d & -b \\ -c & a \end{bmatrix}$.
+                </p>
+                
+                <h3 class="text-xl font-semibold mt-6 mb-3 border-b pb-1">Practice Questions</h3>
+                <div class="space-y-6">
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">1. Calculate $det \begin{bmatrix} 3 & 4 \\ 1 & 2 \end{bmatrix}$.</p>
+                        <input type="checkbox" id="sol4-1" class="hidden show-solution">
+                        <label for="sol4-1" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Identify elements: $a=3, b=4, c=1, d=2$.</p>
+                            <p><strong>Step 2:</strong> Use the determinant formula for $2 \times 2$ matrix: $ad - bc$.</p>
+                            <p><strong>Step 3:</strong> Multiply main diagonal entries: $3 \times 2 = 6$.</p>
+                            <p><strong>Step 4:</strong> Multiply off-diagonal entries: $4 \times 1 = 4$.</p>
+                            <p><strong>Step 5:</strong> Subtract the two values: $6 - 4 = 2$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">2. Find $A^{-1}$ for $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$.</p>
+                        <input type="checkbox" id="sol4-2" class="hidden show-solution">
+                        <label for="sol4-2" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> First calculate the determinant: $det(A) = (1)(4) - (2)(3) = 4 - 6 = -2$.</p>
+                            <p><strong>Step 2:</strong> Check if $det(A) \neq 0$. Yes, it's non-zero, so the inverse exists.</p>
+                            <p><strong>Step 3:</strong> Set up the formula: $A^{-1} = \frac{1}{-2} \begin{bmatrix} 4 & -2 \\ -3 & 1 \end{bmatrix}$. Note the swapped main diagonal and negated off-diagonal elements.</p>
+                            <p><strong>Step 4:</strong> Multiply the scalar into the matrix: $\begin{bmatrix} -2 & 1 \\ 1.5 & -0.5 \end{bmatrix}$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">3. Proof: Prove that $det(AB) = det(A)det(B)$ for generic $2 \times 2$ diagonal matrices.</p>
+                        <input type="checkbox" id="sol4-3" class="hidden show-solution">
+                        <label for="sol4-3" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Let $A = \begin{bmatrix} a_1 & 0 \\ 0 & a_2 \end{bmatrix}$ and $B = \begin{bmatrix} b_1 & 0 \\ 0 & b_2 \end{bmatrix}$.</p>
+                            <p><strong>Step 2:</strong> Individual determinants: $det(A) = a_1a_2 - 0 = a_1a_2$, and $det(B) = b_1b_2 - 0 = b_1b_2$.</p>
+                            <p><strong>Step 3:</strong> Matrix product: $AB = \begin{bmatrix} a_1b_1 & 0 \\ 0 & a_2b_2 \end{bmatrix}$.</p>
+                            <p><strong>Step 4:</strong> Determinant of product: $det(AB) = (a_1b_1)(a_2b_2) - 0 = a_1b_1a_2b_2$.</p>
+                            <p><strong>Step 5:</strong> Rearrange terms: $a_1a_2b_1b_2 = det(A)det(B)$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">4. Deduction: Conceptually, what is the determinant of an upper triangular matrix?</p>
+                        <input type="checkbox" id="sol4-4" class="hidden show-solution">
+                        <label for="sol4-4" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> An upper triangular matrix has zeroes below its main diagonal.</p>
+                            <p><strong>Step 2:</strong> When calculating its determinant (e.g., using Laplace expansion down the first column), all terms become zero except the one containing $a_{11}$.</p>
+                            <p><strong>Step 3:</strong> Expanding further down the subsequent sub-matrices continues this pattern.</p>
+                            <p><strong>Step 4:</strong> Consequently, the determinant is simply the product of its main diagonal entries: $det(A) = a_{11} \cdot a_{22} \cdots a_{nn}$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">5. If $det(A) = 5$, find $det(A^T)$.</p>
+                        <input type="checkbox" id="sol4-5" class="hidden show-solution">
+                        <label for="sol4-5" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> By definition, the transpose $A^T$ is formed by turning the rows of $A$ into columns.</p>
+                            <p><strong>Step 2:</strong> The determinant of a square matrix remains invariant under the transpose operation because expansion by rows gives the same result as expansion by columns.</p>
+                            <p><strong>Step 3:</strong> Therefore, $det(A^T) = det(A)$.</p>
+                            <p><strong>Step 4:</strong> The answer is 5.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">6. Solve for $x$: $det \begin{bmatrix} x & 1 \\ 4 & x \end{bmatrix} = 0$.</p>
+                        <input type="checkbox" id="sol4-6" class="hidden show-solution">
+                        <label for="sol4-6" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Expand the determinant expression using the $2 \times 2$ formula $ad-bc$.</p>
+                            <p><strong>Step 2:</strong> The equation becomes $(x)(x) - (1)(4) = 0$.</p>
+                            <p><strong>Step 3:</strong> Simplify: $x^2 - 4 = 0$.</p>
+                            <p><strong>Step 4:</strong> Add 4 to both sides: $x^2 = 4$.</p>
+                            <p><strong>Step 5:</strong> Take the square root: $x = \pm 2$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">7. Deduction: Show that $(A^{-1})^{-1} = A$.</p>
+                        <input type="checkbox" id="sol4-7" class="hidden show-solution">
+                        <label for="sol4-7" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> By definition, a matrix $X$ is the inverse of $B$ if $XB = BX = I$.</p>
+                            <p><strong>Step 2:</strong> Let's find the inverse of the matrix $B = A^{-1}$.</p>
+                            <p><strong>Step 3:</strong> We know from properties of inverses that $A(A^{-1}) = (A^{-1})A = I$.</p>
+                            <p><strong>Step 4:</strong> This equation exactly fits the definition of $A$ being the inverse of $A^{-1}$.</p>
+                            <p><strong>Step 5:</strong> Therefore, the inverse of $A^{-1}$, written as $(A^{-1})^{-1}$, is $A$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">8. Find the minor $M_{11}$ of the generic $3 \times 3$ matrix $\begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \\ 7 & 8 & 9 \end{bmatrix}$.</p>
+                        <input type="checkbox" id="sol4-8" class="hidden show-solution">
+                        <label for="sol4-8" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> The minor $M_{ij}$ is the determinant of the submatrix obtained by deleting row $i$ and column $j$.</p>
+                            <p><strong>Step 2:</strong> To find $M_{11}$, delete Row 1 and Column 1.</p>
+                            <p><strong>Step 3:</strong> The remaining $2 \times 2$ submatrix is $\begin{bmatrix} 5 & 6 \\ 8 & 9 \end{bmatrix}$.</p>
+                            <p><strong>Step 4:</strong> Calculate its determinant: $(5)(9) - (6)(8) = 45 - 48 = -3$. Thus, $M_{11} = -3$.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">9. Deduction: If $det(A) = 0$, what can you deduce about the rows of $A$?</p>
+                        <input type="checkbox" id="sol4-9" class="hidden show-solution">
+                        <label for="sol4-9" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> The determinant of an $n \times n$ matrix corresponds to the volume of the $n$-dimensional parallelepiped spanned by its row vectors.</p>
+                            <p><strong>Step 2:</strong> A determinant of 0 means the volume is "flattened" into a lower dimension.</p>
+                            <p><strong>Step 3:</strong> This occurs if and only if one row can be expressed as a linear combination of the other rows.</p>
+                            <p><strong>Step 4:</strong> Therefore, the rows of matrix $A$ must be linearly dependent.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-4 rounded border border-blue-100">
+                        <p class="font-bold text-blue-800 mb-2">10. Calculate $A^2$ if $A = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$.</p>
+                        <input type="checkbox" id="sol4-10" class="hidden show-solution">
+                        <label for="sol4-10" class="text-sm text-blue-600 cursor-pointer hover:underline">View Step-by-Step Solution</label>
+                        <div class="solution mt-3 text-sm text-gray-700 space-y-2 italic">
+                            <p><strong>Step 1:</strong> Identify that $A$ is the $2 \times 2$ identity matrix, $I_2$.</p>
+                            <p><strong>Step 2:</strong> $A^2$ means multiplying the matrix by itself: $A \times A$.</p>
+                            <p><strong>Step 3:</strong> Substituting $I$: $I_2 \times I_2$.</p>
+                            <p><strong>Step 4:</strong> A fundamental property of the identity matrix is that multiplying any matrix $M$ by $I$ yields $M$. Applying this to itself means $I \times I = I$.</p>
+                            <p><strong>Step 5:</strong> Thus, $A^2 = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-8 text-center">
+        <p>&copy; 2024 Advanced Engineering Mathematics Study Resource</p>
+        <p class="text-sm mt-2 italic">Based on Kreyszig 10th Ed.</p>
+    </footer>
+
+</body>
+</html>

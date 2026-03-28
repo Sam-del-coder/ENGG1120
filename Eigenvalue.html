@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linear Algebra Chapter 8: Matrix Eigenvalue Problems - Study Notes</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-color: #202020;
+            --secondary-color: #0085FF;
+            --accent-color: #FFCC5D;
+            --definition-bg: #E8F4FD;
+            --definition-border: #0085FF;
+            --question-bg: #FFF9E6;
+            --question-border: #FFCC5D;
+            --solution-bg: #F0F9FF;
+            --solution-border: #60A5FA;
+            --proof-bg: #F3E8FF;
+            --proof-border: #A78BFA;
+        }
+
+        @media print {
+            @page {
+                size: auto;
+                margin: 20mm 25mm;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+                font-size: 10pt;
+                line-height: 1.3;
+                color: #000000;
+                background: white;
+                max-width: 216mm;
+                margin: 0 auto;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .page {
+                width: 100%;
+                max-width: 160mm !important;
+                min-height: 279mm !important;
+                margin: 0 auto !important;
+                padding: 0 !important;
+                box-sizing: border-box !important;
+                page-break-after: always !important;
+                overflow: visible !important;
+                position: relative;
+                background: white;
+            }
+
+            .page:last-child {
+                page-break-after: auto !important;
+            }
+
+            p, div, span, li, td, th { font-size: 10pt; line-height: 1.3; }
+            h1 { font-size: 18pt; line-height: 1.25; margin: 12px 0 8px 0; }
+            h2 { font-size: 14pt; line-height: 1.25; margin: 10px 0 6px 0; }
+            h3 { font-size: 12pt; line-height: 1.3; margin: 8px 0 4px 0; }
+            h4 { font-size: 11pt; line-height: 1.3; margin: 6px 0 4px 0; }
+
+            .definition-box, .question-block, .solution-block, .concept-section {
+                page-break-inside: avoid !important;
+            }
+
+            h1, h2, h3, h4, .section-title {
+                page-break-after: avoid !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .toc {
+                page-break-after: always !important;
+            }
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--primary-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            overflow: visible;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #4D4D4D 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 16px 16px 0 0;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0 0 10px 0;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .toc {
+            background: #F9FAFB;
+            border: 2px solid var(--secondary-color);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+        }
+
+        .toc h2 {
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .toc ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .toc li {
+            margin: 12px 0;
+        }
+
+        .toc a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: block;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        .toc a:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateX(10px);
+        }
+
+        .concept-section {
+            margin: 50px 0;
+            scroll-margin-top: 20px;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 4px solid var(--secondary-color);
+        }
+
+        .definition-box {
+            background: var(--definition-bg);
+            border-left: 6px solid var(--definition-border);
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 4px 6px rgba(0, 133, 255, 0.1);
+        }
+
+        .definition-box h3 {
+            color: var(--secondary-color);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .formula {
+            background: white;
+            border: 2px dashed var(--secondary-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .question-block {
+            background: var(--question-bg);
+            border-left: 6px solid var(--question-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(255, 204, 93, 0.1);
+        }
+
+        .question-block h4 {
+            color: #D97706;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .solution-block {
+            background: var(--solution-bg);
+            border-left: 6px solid var(--solution-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0 30px 0;
+            box-shadow: 0 4px 6px rgba(96, 165, 250, 0.1);
+        }
+
+        .solution-block.hidden {
+            display: none !important;
+        }
+
+        .solution-block h4 {
+            color: #2563EB;
+            font-weight: 600;
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .proof-block {
+            background: var(--proof-bg);
+            border-left: 6px solid var(--proof-border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 6px rgba(167, 139, 250, 0.1);
+        }
+
+        .step {
+            margin: 15px 0;
+            padding-left: 20px;
+            border-left: 3px solid #CBD5E1;
+        }
+
+        .step-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 8px;
+        }
+
+        .matrix {
+            display: inline-block;
+            vertical-align: middle;
+            margin: 5px;
+        }
+
+        .matrix-row {
+            display: flex;
+            justify-content: center;
+        }
+
+        .matrix-element {
+            padding: 5px 10px;
+            text-align: center;
+            min-width: 40px;
+        }
+
+        .highlight {
+            background: var(--accent-color);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .note {
+            background: #FEF3C7;
+            border-left: 4px solid #F59E0B;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 6px;
+            font-style: italic;
+        }
+
+        .kuse-branding {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 50px;
+            padding: 20px;
+            color: #9C9C9C;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .kuse-branding:hover {
+            color: var(--secondary-color);
+        }
+
+        .kuse-branding svg {
+            height: 1.2em;
+        }
+
+        ol, ul {
+            margin: 10px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .property-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .property-list li {
+            background: white;
+            border-left: 4px solid var(--secondary-color);
+            padding: 12px 15px;
+            margin: 10px 0;
+            border-radius: 6px;
+        }
+
+        .property-list li::before {
+            content: "▸ ";
+            color: var(--secondary-color);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        @media screen and (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .formula {
+                font-size: 0.9rem;
+                overflow-x: auto;
+            }
+        }
+    </style>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']],
+                packages: {'[+]': ['ams']}
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Linear Algebra</h1>
+            <p>Eigenvalues and Eigenvectors</p>
+        </div>
+
+        <div class="content">
+            <div class="toc">
+                <h2>📚 Table of Contents</h2>
+                <ul>
+                    <li><a href="#section-8-1">Section 8.1: Eigenvalues and Eigenvectors</a></li>
+                    <li><a href="#section-8-3">Section 8.3: Diagonalization</a></li>
+                    <li><a href="#section-8-4">Section 8.4: Symmetric Matrices</a></li>
+                </ul>
+            </div>
+
+            <!-- Section 8.1: Eigenvalues and Eigenvectors -->
+            <div class="concept-section" id="section-8-1">
+                <h2 class="section-title">Section 8.1: Eigenvalues and Eigenvectors</h2>
+
+                <div class="definition-box">
+                    <h3>📖 Definition: Eigenvalues and Eigenvectors</h3>
+                    <p>Let <strong>A</strong> be an <strong>n × n</strong> matrix. A scalar <strong>λ</strong> is called an <strong>eigenvalue</strong> of <strong>A</strong> if there exists a non-zero vector <strong>v</strong> in ℝⁿ such that:</p>
+                    <div class="formula">\[A v = \lambda v\]</div>
+                    <p>The non-zero vector <strong>v</strong> is called an <strong>eigenvector</strong> corresponding to the eigenvalue <strong>λ</strong>.</p>
+                </div>
+
+                <div class="definition-box">
+                    <h3>📐 Characteristic Equation</h3>
+                    <p>The <strong>characteristic equation</strong> of an n × n matrix A is:</p>
+                    <div class="formula">\[det(A - \lambda I) = 0\]</div>
+                    <p>where <strong>I</strong> is the n × n identity matrix. The polynomial det(A - λI) is called the <strong>characteristic polynomial</strong> of A.</p>
+                    <p>The eigenvalues of A are the roots of the characteristic equation.</p>
+                </div>
+
+                <div class="definition-box">
+                    <h3>🔍 Finding Eigenvalues and Eigenvectors</h3>
+                    <ul class="property-list">
+                        <li><strong>Step 1:</strong> Form the matrix (A - λI)</li>
+                        <li><strong>Step 2:</strong> Find det(A - λI) and set it equal to zero</li>
+                        <li><strong>Step 3:</strong> Solve the characteristic equation for λ</li>
+                        <li><strong>Step 4:</strong> For each eigenvalue λ, solve (A - λI)v = 0 to find eigenvectors</li>
+                    </ul>
+                </div>
+
+                <div class="definition-box">
+                    <h3>⚡ Properties of Eigenvalues</h3>
+                    <ul class="property-list">
+                        <li>The sum of eigenvalues equals the trace of A: Σλᵢ = tr(A)</li>
+                        <li>The product of eigenvalues equals the determinant of A: Πλᵢ = det(A)</li>
+                        <li>If A is triangular, the eigenvalues are the diagonal entries</li>
+                        <li>If λ is an eigenvalue of A, then λᵏ is an eigenvalue of Aᵏ</li>
+                        <li>A is invertible if and only if 0 is not an eigenvalue</li>
+                    </ul>
+                </div>
+
+                <h3 style="color: var(--primary-color); font-size: 1.5rem; margin-top: 40px; margin-bottom: 20px;">📝 Practice Questions</h3>
+
+                <div class="question-block">
+                    <h4>Question 1: Finding Eigenvalues</h4>
+                    <p>Find all eigenvalues of the matrix A = \(\begin{pmatrix}3 & 1 \\ 0 & 2\end{pmatrix}\)</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 1:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Form (A - λI)</div>
+                        <p>A - λI = \(\begin{pmatrix}3-λ & 1 \\ 0 & 2-λ\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Calculate det(A - λI)</div>
+                        <p>det(A - λI) = (3-λ)(2-λ) - (1)(0)</p>
+                        <p>= (3-λ)(2-λ)</p>
+                        <p>= 6 - 3λ - 2λ + λ²</p>
+                        <p>= λ² - 5λ + 6</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Solve characteristic equation</div>
+                        <p>λ² - 5λ + 6 = 0</p>
+                        <p>(λ - 3)(λ - 2) = 0</p>
+                        <p><span class="highlight">λ₁ = 3, λ₂ = 2</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 2: Finding Eigenvectors</h4>
+                    <p>For the matrix A = \(\begin{pmatrix}3 & 1 \\ 0 & 2\end{pmatrix}\), find the eigenvector corresponding to λ = 3.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 2:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Form (A - 3I)</div>
+                        <p>A - 3I = \(\begin{pmatrix}3-3 & 1 \\ 0 & 2-3\end{pmatrix}\) = \(\begin{pmatrix}0 & 1 \\ 0 & -1\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Solve (A - 3I)v = 0</div>
+                        <p>\(\begin{pmatrix}0 & 1 \\ 0 & -1\end{pmatrix}\) \(\begin{pmatrix}v₁ \\ v₂\end{pmatrix}\) = \(\begin{pmatrix}0 \\ 0\end{pmatrix}\)</p>
+                        <p>This gives: v₂ = 0 and -v₂ = 0</p>
+                        <p>So v₂ = 0 and v₁ is free</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Write general eigenvector</div>
+                        <p>v = \(\begin{pmatrix}v₁ \\ 0\end{pmatrix}\) = v₁\(\begin{pmatrix}1 \\ 0\end{pmatrix}\)</p>
+                        <p><span class="highlight">Eigenvector: v = \(\begin{pmatrix}1 \\ 0\end{pmatrix}\) (or any non-zero scalar multiple)</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 3: Eigenvalues of 3×3 Matrix</h4>
+                    <p>Find the eigenvalues of A = \(\begin{pmatrix}2 & 1 & 0 \\ 1 & 2 & 1 \\ 0 & 1 & 2\end{pmatrix}\)</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 3:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Form (A - λI)</div>
+                        <p>A - λI = \(\begin{pmatrix}2-λ & 1 & 0 \\ 1 & 2-λ & 1 \\ 0 & 1 & 2-λ\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Calculate det(A - λI)</div>
+                        <p>Expanding along the first row:</p>
+                        <p>det(A - λI) = (2-λ)[(2-λ)² - 1] - 1[1(2-λ) - 0]</p>
+                        <p>= (2-λ)[(2-λ)² - 1] - (2-λ)</p>
+                        <p>= (2-λ)[(2-λ)² - 1 - 1]</p>
+                        <p>= (2-λ)[(2-λ)² - 2]</p>
+                        <p>= (2-λ)[4 - 4λ + λ² - 2]</p>
+                        <p>= (2-λ)(λ² - 4λ + 2)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Solve characteristic equation</div>
+                        <p>(2-λ)(λ² - 4λ + 2) = 0</p>
+                        <p>λ₁ = 2</p>
+                        <p>For λ² - 4λ + 2 = 0:</p>
+                        <p>λ = (4 ± √(16-8))/2 = (4 ± √8)/2 = (4 ± 2√2)/2 = 2 ± √2</p>
+                        <p><span class="highlight">λ₁ = 2, λ₂ = 2 + √2, λ₃ = 2 - √2</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 4: Verification of Eigenvalue Property</h4>
+                    <p>Verify that the sum of eigenvalues equals the trace for A = \(\begin{pmatrix}4 & 2 \\ 1 & 3\end{pmatrix}\)</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 4:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Find eigenvalues</div>
+                        <p>det(A - λI) = det(\(\begin{pmatrix}4-λ & 2 \\ 1 & 3-λ\end{pmatrix}\))</p>
+                        <p>= (4-λ)(3-λ) - 2</p>
+                        <p>= 12 - 4λ - 3λ + λ² - 2</p>
+                        <p>= λ² - 7λ + 10</p>
+                        <p>= (λ - 5)(λ - 2)</p>
+                        <p>λ₁ = 5, λ₂ = 2</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Calculate sum of eigenvalues</div>
+                        <p>λ₁ + λ₂ = 5 + 2 = 7</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Calculate trace</div>
+                        <p>tr(A) = 4 + 3 = 7</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 4: Verification</div>
+                        <p><span class="highlight">λ₁ + λ₂ = 7 = tr(A) ✓</span></p>
+                        <p>The property is verified.</p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 5: Eigenvalues and Determinant</h4>
+                    <p>If A is a 3×3 matrix with eigenvalues 2, -1, and 3, find det(A).</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 5:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Apply eigenvalue property</div>
+                        <p>The product of eigenvalues equals the determinant:</p>
+                        <p>det(A) = λ₁ × λ₂ × λ₃</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Calculate</div>
+                        <p>det(A) = 2 × (-1) × 3</p>
+                        <p><span class="highlight">det(A) = -6</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 6: Eigenvalues of Triangular Matrix</h4>
+                    <p>Find the eigenvalues of the upper triangular matrix A = \(\begin{pmatrix}5 & 2 & 1 \\ 0 & 3 & 4 \\ 0 & 0 & -2\end{pmatrix}\)</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 6:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Apply triangular matrix property</div>
+                        <p>For a triangular matrix, the eigenvalues are the diagonal entries.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Identify eigenvalues</div>
+                        <p><span class="highlight">λ₁ = 5, λ₂ = 3, λ₃ = -2</span></p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Verification (optional)</div>
+                        <p>We can verify by computing det(A - λI):</p>
+                        <p>det(A - λI) = (5-λ)(3-λ)(-2-λ)</p>
+                        <p>Setting this to zero gives λ = 5, 3, or -2 ✓</p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 7: Eigenvalues of Matrix Powers</h4>
+                    <p>If A has eigenvalues λ₁ = 2 and λ₂ = 3, find the eigenvalues of A³.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 7:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Apply power property</div>
+                        <p>If λ is an eigenvalue of A, then λᵏ is an eigenvalue of Aᵏ.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Calculate eigenvalues of A³</div>
+                        <p>For λ₁ = 2: (λ₁)³ = 2³ = 8</p>
+                        <p>For λ₂ = 3: (λ₂)³ = 3³ = 27</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Answer</div>
+                        <p><span class="highlight">The eigenvalues of A³ are 8 and 27</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 8: Proof - Eigenvalue Sum Property</h4>
+                    <p>Prove that for a 2×2 matrix A = \(\begin{pmatrix}a & b \\ c & d\end{pmatrix}\), the sum of eigenvalues equals a + d.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 8:</h4>
+                    <div class="proof-block">
+                        <div class="step">
+                            <div class="step-label">Step 1: Write characteristic polynomial</div>
+                            <p>det(A - λI) = det(\(\begin{pmatrix}a-λ & b \\ c & d-λ\end{pmatrix}\))</p>
+                            <p>= (a-λ)(d-λ) - bc</p>
+                            <p>= ad - aλ - dλ + λ² - bc</p>
+                            <p>= λ² - (a+d)λ + (ad-bc)</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 2: Apply Vieta's formulas</div>
+                            <p>For a quadratic equation λ² + pλ + q = 0 with roots λ₁ and λ₂:</p>
+                            <p>λ₁ + λ₂ = -p</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 3: Identify coefficient</div>
+                            <p>Our characteristic polynomial is: λ² - (a+d)λ + (ad-bc) = 0</p>
+                            <p>Here, p = -(a+d)</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 4: Conclusion</div>
+                            <p>λ₁ + λ₂ = -p = -[-(a+d)] = a + d = tr(A)</p>
+                            <p><span class="highlight">Therefore, the sum of eigenvalues equals the trace. ∎</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 9: Complex Eigenvalues</h4>
+                    <p>Find the eigenvalues of A = \(\begin{pmatrix}0 & -1 \\ 1 & 0\end{pmatrix}\)</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 9:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Form characteristic equation</div>
+                        <p>det(A - λI) = det(\(\begin{pmatrix}−λ & -1 \\ 1 & -λ\end{pmatrix}\))</p>
+                        <p>= (-λ)(-λ) - (-1)(1)</p>
+                        <p>= λ² + 1</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Solve for λ</div>
+                        <p>λ² + 1 = 0</p>
+                        <p>λ² = -1</p>
+                        <p>λ = ±i</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Answer</div>
+                        <p><span class="highlight">λ₁ = i, λ₂ = -i</span></p>
+                        <p class="note">Note: These are complex eigenvalues. Real matrices can have complex eigenvalues.</p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 10: Proof - Invertibility and Eigenvalues</h4>
+                    <p>Prove that a square matrix A is invertible if and only if 0 is not an eigenvalue of A.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 10:</h4>
+                    <div class="proof-block">
+                        <div class="step">
+                            <div class="step-label">Proof (⇒): If A is invertible, then 0 is not an eigenvalue</div>
+                            <p>Assume A is invertible and suppose, for contradiction, that 0 is an eigenvalue.</p>
+                            <p>Then there exists a non-zero vector v such that Av = 0v = 0.</p>
+                            <p>This means v is in the null space of A, so Null(A) ≠ {0}.</p>
+                            <p>But if A is invertible, then Av = 0 implies v = A⁻¹(0) = 0.</p>
+                            <p>This contradicts our assumption that v is non-zero.</p>
+                            <p>Therefore, 0 cannot be an eigenvalue of A.</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Proof (⇐): If 0 is not an eigenvalue, then A is invertible</div>
+                            <p>The eigenvalues of A are roots of det(A - λI) = 0.</p>
+                            <p>If 0 is not an eigenvalue, then det(A - 0I) ≠ 0.</p>
+                            <p>This means det(A) ≠ 0.</p>
+                            <p>A matrix is invertible if and only if its determinant is non-zero.</p>
+                            <p>Therefore, A is invertible.</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Conclusion</div>
+                            <p><span class="highlight">We have proven both directions, so A is invertible ⟺ 0 is not an eigenvalue of A. ∎</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 8.3: Diagonalization -->
+            <div class="concept-section" id="section-8-3">
+                <h2 class="section-title">Section 8.3: Diagonalization</h2>
+
+                <div class="definition-box">
+                    <h3>📖 Definition: Diagonalization</h3>
+                    <p>An n × n matrix <strong>A</strong> is said to be <strong>diagonalizable</strong> if there exists an invertible matrix <strong>P</strong> and a diagonal matrix <strong>D</strong> such that:</p>
+                    <div class="formula">\[A = PDP^{-1}\]</div>
+                    <p>Equivalently: <strong>P⁻¹AP = D</strong></p>
+                    <p>The matrix <strong>D</strong> contains the eigenvalues of A on its diagonal, and the columns of <strong>P</strong> are the corresponding eigenvectors of A.</p>
+                </div>
+
+                <div class="definition-box">
+                    <h3>✅ Conditions for Diagonalizability</h3>
+                    <p>An n × n matrix A is diagonalizable if and only if:</p>
+                    <ul class="property-list">
+                        <li>A has n linearly independent eigenvectors</li>
+                        <li>The sum of the dimensions of the eigenspaces equals n</li>
+                        <li>For each eigenvalue λ with algebraic multiplicity k, the geometric multiplicity (dimension of eigenspace) also equals k</li>
+                    </ul>
+                    <div class="note">
+                        <strong>Important:</strong> If A has n distinct eigenvalues, then A is automatically diagonalizable.
+                    </div>
+                </div>
+
+                <div class="definition-box">
+                    <h3>🔧 How to Diagonalize a Matrix</h3>
+                    <ul class="property-list">
+                        <li><strong>Step 1:</strong> Find all eigenvalues of A by solving det(A - λI) = 0</li>
+                        <li><strong>Step 2:</strong> For each eigenvalue λᵢ, find a basis for the eigenspace by solving (A - λᵢI)v = 0</li>
+                        <li><strong>Step 3:</strong> Check if you have n linearly independent eigenvectors total</li>
+                        <li><strong>Step 4:</strong> Form matrix P with eigenvectors as columns</li>
+                        <li><strong>Step 5:</strong> Form diagonal matrix D with corresponding eigenvalues on the diagonal</li>
+                        <li><strong>Step 6:</strong> Verify that A = PDP⁻¹</li>
+                    </ul>
+                </div>
+
+                <div class="definition-box">
+                    <h3>🔄 Similar Matrices</h3>
+                    <p>Two n × n matrices A and B are <strong>similar</strong> if there exists an invertible matrix P such that:</p>
+                    <div class="formula">\[B = P^{-1}AP\]</div>
+                    <p><strong>Properties of Similar Matrices:</strong></p>
+                    <ul class="property-list">
+                        <li>Similar matrices have the same eigenvalues</li>
+                        <li>Similar matrices have the same determinant</li>
+                        <li>Similar matrices have the same trace</li>
+                        <li>Similar matrices have the same rank</li>
+                        <li>Similar matrices have the same characteristic polynomial</li>
+                    </ul>
+                </div>
+
+                <h3 style="color: var(--primary-color); font-size: 1.5rem; margin-top: 40px; margin-bottom: 20px;">📝 Practice Questions</h3>
+
+                <div class="question-block">
+                    <h4>Question 1: Basic Diagonalization</h4>
+                    <p>Diagonalize the matrix A = \(\begin{pmatrix}3 & 1 \\ 0 & 2\end{pmatrix}\) if possible.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 1:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Find eigenvalues</div>
+                        <p>From Section 8.1, Question 1, we found: λ₁ = 3, λ₂ = 2</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Find eigenvector for λ₁ = 3</div>
+                        <p>(A - 3I)v = 0</p>
+                        <p>\(\begin{pmatrix}0 & 1 \\ 0 & -1\end{pmatrix}\)v = 0</p>
+                        <p>Eigenvector: v₁ = \(\begin{pmatrix}1 \\ 0\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Find eigenvector for λ₂ = 2</div>
+                        <p>(A - 2I)v = 0</p>
+                        <p>\(\begin{pmatrix}1 & 1 \\ 0 & 0\end{pmatrix}\)v = 0</p>
+                        <p>v₁ + v₂ = 0, so v₂ = -v₁</p>
+                        <p>Eigenvector: v₂ = \(\begin{pmatrix}1 \\ -1\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 4: Form P and D</div>
+                        <p>P = \(\begin{pmatrix}1 & 1 \\ 0 & -1\end{pmatrix}\) (columns are eigenvectors)</p>
+                        <p>D = \(\begin{pmatrix}3 & 0 \\ 0 & 2\end{pmatrix}\) (diagonal entries are eigenvalues)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 5: Verify (optional)</div>
+                        <p>P⁻¹ = \(\begin{pmatrix}1 & 1 \\ 0 & -1\end{pmatrix}\) (for this specific P)</p>
+                        <p><span class="highlight">A = PDP⁻¹, so A is diagonalizable with P = \(\begin{pmatrix}1 & 1 \\ 0 & -1\end{pmatrix}\) and D = \(\begin{pmatrix}3 & 0 \\ 0 & 2\end{pmatrix}\)</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 2: Checking Diagonalizability</h4>
+                    <p>Determine if A = \(\begin{pmatrix}2 & 1 \\ 0 & 2\end{pmatrix}\) is diagonalizable.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 2:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Find eigenvalues</div>
+                        <p>det(A - λI) = det(\(\begin{pmatrix}2-λ & 1 \\ 0 & 2-λ\end{pmatrix}\))</p>
+                        <p>= (2-λ)²</p>
+                        <p>λ = 2 (with algebraic multiplicity 2)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Find eigenspace for λ = 2</div>
+                        <p>(A - 2I)v = 0</p>
+                        <p>\(\begin{pmatrix}0 & 1 \\ 0 & 0\end{pmatrix}\)v = 0</p>
+                        <p>This gives v₂ = 0, v₁ is free</p>
+                        <p>Eigenspace: span{\(\begin{pmatrix}1 \\ 0\end{pmatrix}\)}</p>
+                        <p>Geometric multiplicity = 1</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Check diagonalizability</div>
+                        <p>Algebraic multiplicity = 2</p>
+                        <p>Geometric multiplicity = 1</p>
+                        <p>Since these are not equal, we don't have 2 linearly independent eigenvectors.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 4: Conclusion</div>
+                        <p><span class="highlight">A is NOT diagonalizable</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 3: Diagonalizing a 3×3 Matrix</h4>
+                    <p>Diagonalize A = \(\begin{pmatrix}1 & 0 & 0 \\ 0 & 2 & 1 \\ 0 & 1 & 2\end{pmatrix}\)</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 3:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Find eigenvalues</div>
+                        <p>det(A - λI) = det(\(\begin{pmatrix}1-λ & 0 & 0 \\ 0 & 2-λ & 1 \\ 0 & 1 & 2-λ\end{pmatrix}\))</p>
+                        <p>= (1-λ)[(2-λ)² - 1]</p>
+                        <p>= (1-λ)[4 - 4λ + λ² - 1]</p>
+                        <p>= (1-λ)(λ² - 4λ + 3)</p>
+                        <p>= (1-λ)(λ-1)(λ-3)</p>
+                        <p>λ₁ = 1 (multiplicity 2), λ₂ = 3</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Find eigenvectors for λ = 1</div>
+                        <p>(A - I)v = 0</p>
+                        <p>\(\begin{pmatrix}0 & 0 & 0 \\ 0 & 1 & 1 \\ 0 & 1 & 1\end{pmatrix}\)v = 0</p>
+                        <p>v₂ + v₃ = 0, v₁ is free</p>
+                        <p>Basis: {\(\begin{pmatrix}1 \\ 0 \\ 0\end{pmatrix}\), \(\begin{pmatrix}0 \\ 1 \\ -1\end{pmatrix}\)}</p>
+                        <p>Geometric multiplicity = 2 ✓</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Find eigenvector for λ = 3</div>
+                        <p>(A - 3I)v = 0</p>
+                        <p>\(\begin{pmatrix}-2 & 0 & 0 \\ 0 & -1 & 1 \\ 0 & 1 & -1\end{pmatrix}\)v = 0</p>
+                        <p>v₁ = 0, v₃ = v₂</p>
+                        <p>Eigenvector: \(\begin{pmatrix}0 \\ 1 \\ 1\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 4: Form P and D</div>
+                        <p>P = \(\begin{pmatrix}1 & 0 & 0 \\ 0 & 1 & 1 \\ 0 & -1 & 1\end{pmatrix}\)</p>
+                        <p>D = \(\begin{pmatrix}1 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 3\end{pmatrix}\)</p>
+                        <p><span class="highlight">A = PDP⁻¹ where P and D are as shown above</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 4: Computing Matrix Powers</h4>
+                    <p>If A = \(\begin{pmatrix}3 & 1 \\ 0 & 2\end{pmatrix}\) with diagonalization A = PDP⁻¹ where P = \(\begin{pmatrix}1 & 1 \\ 0 & -1\end{pmatrix}\) and D = \(\begin{pmatrix}3 & 0 \\ 0 & 2\end{pmatrix}\), compute A⁵.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 4:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Use diagonalization formula</div>
+                        <p>A⁵ = (PDP⁻¹)⁵ = PD⁵P⁻¹</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Compute D⁵</div>
+                        <p>D⁵ = \(\begin{pmatrix}3⁵ & 0 \\ 0 & 2⁵\end{pmatrix}\) = \(\begin{pmatrix}243 & 0 \\ 0 & 32\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Find P⁻¹</div>
+                        <p>For P = \(\begin{pmatrix}1 & 1 \\ 0 & -1\end{pmatrix}\):</p>
+                        <p>P⁻¹ = \(\begin{pmatrix}1 & 1 \\ 0 & -1\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 4: Compute A⁵ = PD⁵P⁻¹</div>
+                        <p>A⁵ = \(\begin{pmatrix}1 & 1 \\ 0 & -1\end{pmatrix}\) \(\begin{pmatrix}243 & 0 \\ 0 & 32\end{pmatrix}\) \(\begin{pmatrix}1 & 1 \\ 0 & -1\end{pmatrix}\)</p>
+                        <p>= \(\begin{pmatrix}1 & 1 \\ 0 & -1\end{pmatrix}\) \(\begin{pmatrix}243 & 243 \\ 0 & -32\end{pmatrix}\)</p>
+                        <p>= \(\begin{pmatrix}243 & 211 \\ 0 & 32\end{pmatrix}\)</p>
+                        <p><span class="highlight">A⁵ = \(\begin{pmatrix}243 & 211 \\ 0 & 32\end{pmatrix}\)</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 5: Similar Matrices</h4>
+                    <p>Show that A = \(\begin{pmatrix}4 & 2 \\ 1 & 3\end{pmatrix}\) and B = \(\begin{pmatrix}5 & 0 \\ 0 & 2\end{pmatrix}\) are similar matrices.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 5:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Find eigenvalues of A</div>
+                        <p>det(A - λI) = (4-λ)(3-λ) - 2 = λ² - 7λ + 10 = (λ-5)(λ-2)</p>
+                        <p>Eigenvalues of A: λ₁ = 5, λ₂ = 2</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Observe B</div>
+                        <p>B is diagonal with diagonal entries 5 and 2</p>
+                        <p>Eigenvalues of B: λ₁ = 5, λ₂ = 2</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Diagonalize A</div>
+                        <p>For λ = 5: eigenvector \(\begin{pmatrix}2 \\ 1\end{pmatrix}\)</p>
+                        <p>For λ = 2: eigenvector \(\begin{pmatrix}1 \\ -1\end{pmatrix}\)</p>
+                        <p>P = \(\begin{pmatrix}2 & 1 \\ 1 & -1\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 4: Show similarity</div>
+                        <p>A = PBP⁻¹, which means B = P⁻¹AP</p>
+                        <p><span class="highlight">Therefore, A and B are similar matrices</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 6: Proof - Distinct Eigenvalues</h4>
+                    <p>Prove that if an n×n matrix has n distinct eigenvalues, then it is diagonalizable.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 6:</h4>
+                    <div class="proof-block">
+                        <div class="step">
+                            <div class="step-label">Step 1: State the key theorem</div>
+                            <p>Eigenvectors corresponding to distinct eigenvalues are linearly independent.</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 2: Apply to our case</div>
+                            <p>Let A be an n×n matrix with n distinct eigenvalues λ₁, λ₂, ..., λₙ.</p>
+                            <p>For each eigenvalue λᵢ, there exists at least one eigenvector vᵢ.</p>
+                            <p>Since the eigenvalues are distinct, the eigenvectors v₁, v₂, ..., vₙ are linearly independent.</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 3: Form diagonalization</div>
+                            <p>We have n linearly independent eigenvectors in ℝⁿ.</p>
+                            <p>Form P = [v₁ v₂ ... vₙ] (matrix with eigenvectors as columns).</p>
+                            <p>P is invertible because its columns are linearly independent.</p>
+                            <p>Form D = diag(λ₁, λ₂, ..., λₙ).</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 4: Conclusion</div>
+                            <p>Then A = PDP⁻¹, so A is diagonalizable.</p>
+                            <p><span class="highlight">Therefore, if A has n distinct eigenvalues, A is diagonalizable. ∎</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 7: Algebraic vs Geometric Multiplicity</h4>
+                    <p>For A = \(\begin{pmatrix}3 & 1 & 0 \\ 0 & 3 & 1 \\ 0 & 0 & 3\end{pmatrix}\), find the algebraic and geometric multiplicities of the eigenvalue λ = 3. Is A diagonalizable?</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 7:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Find characteristic polynomial</div>
+                        <p>det(A - λI) = det(\(\begin{pmatrix}3-λ & 1 & 0 \\ 0 & 3-λ & 1 \\ 0 & 0 & 3-λ\end{pmatrix}\))</p>
+                        <p>= (3-λ)³</p>
+                        <p>Algebraic multiplicity of λ = 3 is 3</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Find eigenspace</div>
+                        <p>(A - 3I)v = 0</p>
+                        <p>\(\begin{pmatrix}0 & 1 & 0 \\ 0 & 0 & 1 \\ 0 & 0 & 0\end{pmatrix}\)v = 0</p>
+                        <p>v₂ = 0, v₃ = 0, v₁ is free</p>
+                        <p>Eigenspace = span{\(\begin{pmatrix}1 \\ 0 \\ 0\end{pmatrix}\)}</p>
+                        <p>Geometric multiplicity = 1</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Check diagonalizability</div>
+                        <p>Algebraic multiplicity (3) ≠ Geometric multiplicity (1)</p>
+                        <p>We only have 1 linearly independent eigenvector, but need 3.</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 4: Conclusion</div>
+                        <p><span class="highlight">A is NOT diagonalizable</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 8: Proof - Similar Matrices Same Eigenvalues</h4>
+                    <p>Prove that similar matrices have the same eigenvalues.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 8:</h4>
+                    <div class="proof-block">
+                        <div class="step">
+                            <div class="step-label">Step 1: Setup</div>
+                            <p>Let A and B be similar matrices.</p>
+                            <p>Then there exists an invertible matrix P such that B = P⁻¹AP.</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 2: Compute characteristic polynomial of B</div>
+                            <p>det(B - λI) = det(P⁻¹AP - λI)</p>
+                            <p>= det(P⁻¹AP - λP⁻¹IP)</p>
+                            <p>= det(P⁻¹(A - λI)P)</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 3: Use determinant properties</div>
+                            <p>det(P⁻¹(A - λI)P) = det(P⁻¹) · det(A - λI) · det(P)</p>
+                            <p>= det(P⁻¹) · det(P) · det(A - λI)</p>
+                            <p>= det(P⁻¹P) · det(A - λI)</p>
+                            <p>= det(I) · det(A - λI)</p>
+                            <p>= det(A - λI)</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 4: Conclusion</div>
+                            <p>Since det(B - λI) = det(A - λI), the matrices A and B have the same characteristic polynomial.</p>
+                            <p>Therefore, they have the same eigenvalues.</p>
+                            <p><span class="highlight">Similar matrices have the same eigenvalues. ∎</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 9: Application - Solving Difference Equations</h4>
+                    <p>Use diagonalization to find a formula for xₙ where x₀ = \(\begin{pmatrix}1 \\ 0\end{pmatrix}\) and xₙ₊₁ = \(\begin{pmatrix}3 & 1 \\ 0 & 2\end{pmatrix}\)xₙ.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 9:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Recognize the pattern</div>
+                        <p>xₙ = Aⁿx₀ where A = \(\begin{pmatrix}3 & 1 \\ 0 & 2\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Use diagonalization from earlier</div>
+                        <p>From Question 1: A = PDP⁻¹</p>
+                        <p>P = \(\begin{pmatrix}1 & 1 \\ 0 & -1\end{pmatrix}\), D = \(\begin{pmatrix}3 & 0 \\ 0 & 2\end{pmatrix}\)</p>
+                        <p>P⁻¹ = \(\begin{pmatrix}1 & 1 \\ 0 & -1\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Compute Aⁿ</div>
+                        <p>Aⁿ = PDⁿP⁻¹</p>
+                        <p>Dⁿ = \(\begin{pmatrix}3ⁿ & 0 \\ 0 & 2ⁿ\end{pmatrix}\)</p>
+                        <p>Aⁿ = \(\begin{pmatrix}1 & 1 \\ 0 & -1\end{pmatrix}\) \(\begin{pmatrix}3ⁿ & 0 \\ 0 & 2ⁿ\end{pmatrix}\) \(\begin{pmatrix}1 & 1 \\ 0 & -1\end{pmatrix}\)</p>
+                        <p>= \(\begin{pmatrix}3ⁿ & 3ⁿ - 2ⁿ \\ 0 & 2ⁿ\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 4: Apply to x₀</div>
+                        <p>xₙ = Aⁿx₀ = \(\begin{pmatrix}3ⁿ & 3ⁿ - 2ⁿ \\ 0 & 2ⁿ\end{pmatrix}\) \(\begin{pmatrix}1 \\ 0\end{pmatrix}\)</p>
+                        <p><span class="highlight">xₙ = \(\begin{pmatrix}3ⁿ \\ 0\end{pmatrix}\)</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 10: Proof - Trace of Similar Matrices</h4>
+                    <p>Prove that similar matrices have the same trace.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 10:</h4>
+                    <div class="proof-block">
+                        <div class="step">
+                            <div class="step-label">Step 1: Setup</div>
+                            <p>Let A and B be similar matrices with B = P⁻¹AP for some invertible matrix P.</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 2: Use trace properties</div>
+                            <p>We use the property: tr(XY) = tr(YX) for any matrices X and Y (cyclic property)</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 3: Compute tr(B)</div>
+                            <p>tr(B) = tr(P⁻¹AP)</p>
+                            <p>= tr((P⁻¹A)P)</p>
+                            <p>= tr(P(P⁻¹A)) (by cyclic property)</p>
+                            <p>= tr((PP⁻¹)A)</p>
+                            <p>= tr(IA)</p>
+                            <p>= tr(A)</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 4: Conclusion</div>
+                            <p><span class="highlight">Therefore, tr(B) = tr(A), so similar matrices have the same trace. ∎</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 8.4: Symmetric Matrices -->
+            <div class="concept-section" id="section-8-4">
+                <h2 class="section-title">Section 8.4: Symmetric Matrices</h2>
+
+                <div class="definition-box">
+                    <h3>📖 Definition: Symmetric Matrix</h3>
+                    <p>A matrix <strong>A</strong> is <strong>symmetric</strong> if:</p>
+                    <div class="formula">\[A = A^{\top}\]</div>
+                    <p>In other words, A is symmetric if it equals its own transpose. This means aᵢⱼ = aⱼᵢ for all i, j.</p>
+                </div>
+
+                <div class="definition-box">
+                    <h3>⭐ Properties of Symmetric Matrices</h3>
+                    <ul class="property-list">
+                        <li>All eigenvalues of a symmetric matrix are real</li>
+                        <li>Eigenvectors corresponding to distinct eigenvalues are orthogonal</li>
+                        <li>Every symmetric matrix is diagonalizable</li>
+                        <li>A symmetric matrix can be orthogonally diagonalized</li>
+                        <li>The dimension of each eigenspace equals the algebraic multiplicity of the eigenvalue</li>
+                    </ul>
+                </div>
+
+                <div class="definition-box">
+                    <h3>🔄 Orthogonal Diagonalization</h3>
+                    <p>A matrix <strong>A</strong> is <strong>orthogonally diagonalizable</strong> if there exists an orthogonal matrix <strong>Q</strong> (meaning Q⁻¹ = Qᵀ) and a diagonal matrix <strong>D</strong> such that:</p>
+                    <div class="formula">\[A = QDQ^{\top}\]</div>
+                    <p>Equivalently: <strong>QᵀAQ = D</strong></p>
+                    <p><strong>How to Orthogonally Diagonalize:</strong></p>
+                    <ul class="property-list">
+                        <li><strong>Step 1:</strong> Find all eigenvalues of A</li>
+                        <li><strong>Step 2:</strong> For each eigenvalue, find an orthogonal basis for its eigenspace</li>
+                        <li><strong>Step 3:</strong> Normalize all eigenvectors to unit length</li>
+                        <li><strong>Step 4:</strong> Form Q with normalized orthogonal eigenvectors as columns</li>
+                        <li><strong>Step 5:</strong> Form D with eigenvalues on the diagonal (in corresponding order)</li>
+                    </ul>
+                </div>
+
+                <div class="definition-box">
+                    <h3>📐 Spectral Theorem</h3>
+                    <p>The <strong>Spectral Theorem</strong> states that:</p>
+                    <div class="note">
+                        An n×n matrix A is orthogonally diagonalizable if and only if A is symmetric.
+                    </div>
+                    <p>This is one of the most important theorems in linear algebra. It guarantees that every symmetric matrix can be decomposed as:</p>
+                    <div class="formula">\[A = \lambda_{1}u_{1}u_{1}^{\top} + \lambda_{2}u_{2}u_{2}^{\top} + ... + \lambda_{n}u_{n}u_{n}^{\top}\]</div>
+                    <p>where λᵢ are eigenvalues and uᵢ are orthonormal eigenvectors.</p>
+                </div>
+
+                <div class="definition-box">
+                    <h3>🔲 Orthogonal Matrices</h3>
+                    <p>A matrix <strong>Q</strong> is <strong>orthogonal</strong> if:</p>
+                    <div class="formula">\[Q^{\top}Q = QQ^{\top} = I\]</div>
+                    <p>Equivalently: <strong>Q⁻¹ = Qᵀ</strong></p>
+                    <p><strong>Properties of Orthogonal Matrices:</strong></p>
+                    <ul class="property-list">
+                        <li>The columns of Q form an orthonormal set</li>
+                        <li>The rows of Q form an orthonormal set</li>
+                        <li>Q preserves lengths: ||Qx|| = ||x|| for all x</li>
+                        <li>Q preserves dot products: (Qx)·(Qy) = x·y</li>
+                        <li>det(Q) = ±1</li>
+                        <li>All eigenvalues have absolute value 1</li>
+                    </ul>
+                </div>
+
+                <h3 style="color: var(--primary-color); font-size: 1.5rem; margin-top: 40px; margin-bottom: 20px;">📝 Practice Questions</h3>
+
+                <div class="question-block">
+                    <h4>Question 1: Verifying Symmetry</h4>
+                    <p>Verify that A = \(\begin{pmatrix}3 & 1 & 2 \\ 1 & 4 & 0 \\ 2 & 0 & 5\end{pmatrix}\) is symmetric and find its eigenvalues.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 1:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Check symmetry</div>
+                        <p>Aᵀ = \(\begin{pmatrix}3 & 1 & 2 \\ 1 & 4 & 0 \\ 2 & 0 & 5\end{pmatrix}\)</p>
+                        <p>Since Aᵀ = A, the matrix is symmetric ✓</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Find characteristic polynomial</div>
+                        <p>det(A - λI) = det(\(\begin{pmatrix}3-λ & 1 & 2 \\ 1 & 4-λ & 0 \\ 2 & 0 & 5-λ\end{pmatrix}\))</p>
+                        <p>Expanding along row 2:</p>
+                        <p>= -1·det(\(\begin{pmatrix}1 & 2 \\ 0 & 5-λ\end{pmatrix}\)) + (4-λ)·det(\(\begin{pmatrix}3-λ & 2 \\ 2 & 5-λ\end{pmatrix}\))</p>
+                        <p>= -(5-λ) + (4-λ)[(3-λ)(5-λ) - 4]</p>
+                        <p>= -λ² + 12λ - 27</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Solve for eigenvalues</div>
+                        <p>-λ³ + 12λ² - 36λ + 27 = 0</p>
+                        <p><span class="highlight">λ₁ = 6, λ₂ = 3, λ₃ = 3 (all real, as expected for symmetric matrix)</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 2: Orthogonal Diagonalization</h4>
+                    <p>Orthogonally diagonalize A = \(\begin{pmatrix}1 & 2 \\ 2 & 1\end{pmatrix}\)</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 2:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Find eigenvalues</div>
+                        <p>det(A - λI) = (1-λ)² - 4 = λ² - 2λ - 3 = (λ-3)(λ+1)</p>
+                        <p>λ₁ = 3, λ₂ = -1</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Find eigenvector for λ₁ = 3</div>
+                        <p>(A - 3I)v = 0</p>
+                        <p>\(\begin{pmatrix}-2 & 2 \\ 2 & -2\end{pmatrix}\)v = 0</p>
+                        <p>v₁ = v₂</p>
+                        <p>Eigenvector: v₁ = \(\begin{pmatrix}1 \\ 1\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Find eigenvector for λ₂ = -1</div>
+                        <p>(A + I)v = 0</p>
+                        <p>\(\begin{pmatrix}2 & 2 \\ 2 & 2\end{pmatrix}\)v = 0</p>
+                        <p>v₁ + v₂ = 0</p>
+                        <p>Eigenvector: v₂ = \(\begin{pmatrix}1 \\ -1\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 4: Verify orthogonality</div>
+                        <p>v₁·v₂ = 1(1) + 1(-1) = 0 ✓</p>
+                        <p>The eigenvectors are orthogonal (as expected for symmetric matrix)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 5: Normalize eigenvectors</div>
+                        <p>u₁ = v₁/||v₁|| = \(\begin{pmatrix}1 \\ 1\end{pmatrix}\)/√2 = \(\begin{pmatrix}1/√2 \\ 1/√2\end{pmatrix}\)</p>
+                        <p>u₂ = v₂/||v₂|| = \(\begin{pmatrix}1 \\ -1\end{pmatrix}\)/√2 = \(\begin{pmatrix}1/√2 \\ -1/√2\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 6: Form Q and D</div>
+                        <p>Q = \(\begin{pmatrix}1/√2 & 1/√2 \\ 1/√2 & -1/√2\end{pmatrix}\)</p>
+                        <p>D = \(\begin{pmatrix}3 & 0 \\ 0 & -1\end{pmatrix}\)</p>
+                        <p><span class="highlight">A = QDQᵀ where Q and D are as shown</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 3: Verifying Orthogonal Matrix</h4>
+                    <p>Verify that Q = \(\begin{pmatrix}1/√2 & 1/√2 \\ 1/√2 & -1/√2\end{pmatrix}\) is an orthogonal matrix.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 3:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Compute Qᵀ</div>
+                        <p>Qᵀ = \(\begin{pmatrix}1/√2 & 1/√2 \\ 1/√2 & -1/√2\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Compute QᵀQ</div>
+                        <p>QᵀQ = \(\begin{pmatrix}1/√2 & 1/√2 \\ 1/√2 & -1/√2\end{pmatrix}\) \(\begin{pmatrix}1/√2 & 1/√2 \\ 1/√2 & -1/√2\end{pmatrix}\)</p>
+                        <p>= \(\begin{pmatrix}1/2 + 1/2 & 1/2 - 1/2 \\ 1/2 - 1/2 & 1/2 + 1/2\end{pmatrix}\)</p>
+                        <p>= \(\begin{pmatrix}1 & 0 \\ 0 & 1\end{pmatrix}\) = I</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Conclusion</div>
+                        <p><span class="highlight">Since QᵀQ = I, Q is orthogonal ✓</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 4: Eigenvalues of Symmetric Matrix</h4>
+                    <p>Prove that all eigenvalues of a symmetric matrix are real.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 4:</h4>
+                    <div class="proof-block">
+                        <div class="step">
+                            <div class="step-label">Step 1: Setup (allow complex eigenvalues)</div>
+                            <p>Let A be a symmetric matrix and λ be an eigenvalue with eigenvector v.</p>
+                            <p>Then Av = λv.</p>
+                            <p>We allow λ and v to be complex.</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 2: Take conjugate transpose</div>
+                            <p>Taking conjugate transpose of both sides:</p>
+                            <p>(Av)* = (λv)*</p>
+                            <p>v*Aᵀ = λ̄v*  (where * denotes conjugate transpose and λ̄ is complex conjugate)</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 3: Use symmetry</div>
+                            <p>Since A is symmetric, Aᵀ = A, so:</p>
+                            <p>v*A = λ̄v*</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 4: Multiply by v</div>
+                            <p>Multiply both sides on the right by v:</p>
+                            <p>v*Av = λ̄v*v</p>
+                            <p>But also from Av = λv, we have:</p>
+                            <p>v*Av = v*λv = λv*v</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 5: Compare</div>
+                            <p>λv*v = λ̄v*v</p>
+                            <p>Since v ≠ 0, we have v*v ≠ 0, so:</p>
+                            <p>λ = λ̄</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 6: Conclusion</div>
+                            <p>A complex number equals its conjugate if and only if it is real.</p>
+                            <p><span class="highlight">Therefore, λ is real. ∎</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 5: Orthogonality of Eigenvectors</h4>
+                    <p>For A = \(\begin{pmatrix}2 & 1 \\ 1 & 2\end{pmatrix}\), verify that eigenvectors corresponding to distinct eigenvalues are orthogonal.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 5:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Find eigenvalues</div>
+                        <p>det(A - λI) = (2-λ)² - 1 = λ² - 4λ + 3 = (λ-3)(λ-1)</p>
+                        <p>λ₁ = 3, λ₂ = 1</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Find eigenvector for λ₁ = 3</div>
+                        <p>(A - 3I)v = 0</p>
+                        <p>\(\begin{pmatrix}-1 & 1 \\ 1 & -1\end{pmatrix}\)v = 0</p>
+                        <p>v₁ = v₂</p>
+                        <p>v₁ = \(\begin{pmatrix}1 \\ 1\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Find eigenvector for λ₂ = 1</div>
+                        <p>(A - I)v = 0</p>
+                        <p>\(\begin{pmatrix}1 & 1 \\ 1 & 1\end{pmatrix}\)v = 0</p>
+                        <p>v₁ + v₂ = 0</p>
+                        <p>v₂ = \(\begin{pmatrix}1 \\ -1\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 4: Check orthogonality</div>
+                        <p>v₁·v₂ = \(\begin{pmatrix}1 \\ 1\end{pmatrix}\)·\(\begin{pmatrix}1 \\ -1\end{pmatrix}\) = 1(1) + 1(-1) = 0</p>
+                        <p><span class="highlight">The eigenvectors are orthogonal ✓</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 6: Spectral Decomposition</h4>
+                    <p>Find the spectral decomposition of A = \(\begin{pmatrix}3 & 1 \\ 1 & 3\end{pmatrix}\)</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 6:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Find eigenvalues</div>
+                        <p>det(A - λI) = (3-λ)² - 1 = λ² - 6λ + 8 = (λ-4)(λ-2)</p>
+                        <p>λ₁ = 4, λ₂ = 2</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Find and normalize eigenvectors</div>
+                        <p>For λ₁ = 4: v₁ = \(\begin{pmatrix}1 \\ 1\end{pmatrix}\), u₁ = \(\begin{pmatrix}1/√2 \\ 1/√2\end{pmatrix}\)</p>
+                        <p>For λ₂ = 2: v₂ = \(\begin{pmatrix}1 \\ -1\end{pmatrix}\), u₂ = \(\begin{pmatrix}1/√2 \\ -1/√2\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Write spectral decomposition</div>
+                        <p>A = λ₁u₁u₁ᵀ + λ₂u₂u₂ᵀ</p>
+                        <p>= 4\(\begin{pmatrix}1/√2 \\ 1/√2\end{pmatrix}\)\(\begin{pmatrix}1/√2 & 1/√2\end{pmatrix}\) + 2\(\begin{pmatrix}1/√2 \\ -1/√2\end{pmatrix}\)\(\begin{pmatrix}1/√2 & -1/√2\end{pmatrix}\)</p>
+                        <p>= 4\(\begin{pmatrix}1/2 & 1/2 \\ 1/2 & 1/2\end{pmatrix}\) + 2\(\begin{pmatrix}1/2 & -1/2 \\ -1/2 & 1/2\end{pmatrix}\)</p>
+                        <p>= \(\begin{pmatrix}2 & 2 \\ 2 & 2\end{pmatrix}\) + \(\begin{pmatrix}1 & -1 \\ -1 & 1\end{pmatrix}\)</p>
+                        <p><span class="highlight">A = \(\begin{pmatrix}3 & 1 \\ 1 & 3\end{pmatrix}\) ✓</span></p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 7: Properties of Orthogonal Matrices</h4>
+                    <p>Prove that if Q is an orthogonal matrix, then det(Q) = ±1.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 7:</h4>
+                    <div class="proof-block">
+                        <div class="step">
+                            <div class="step-label">Step 1: Use definition of orthogonal matrix</div>
+                            <p>Q is orthogonal, so QᵀQ = I</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 2: Take determinant of both sides</div>
+                            <p>det(QᵀQ) = det(I)</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 3: Use determinant properties</div>
+                            <p>det(QᵀQ) = det(Qᵀ)·det(Q)</p>
+                            <p>Since det(Qᵀ) = det(Q):</p>
+                            <p>det(Q)·det(Q) = 1</p>
+                            <p>[det(Q)]² = 1</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 4: Solve</div>
+                            <p>det(Q) = ±1</p>
+                            <p><span class="highlight">Therefore, the determinant of an orthogonal matrix is ±1. ∎</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 8: Proof - Spectral Theorem (One Direction)</h4>
+                    <p>Prove that if A is symmetric, then A is orthogonally diagonalizable.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 8:</h4>
+                    <div class="proof-block">
+                        <div class="step">
+                            <div class="step-label">Step 1: Key facts about symmetric matrices</div>
+                            <p>1) All eigenvalues of A are real</p>
+                            <p>2) Eigenvectors for distinct eigenvalues are orthogonal</p>
+                            <p>3) For each eigenvalue, geometric multiplicity = algebraic multiplicity</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 2: Construct orthonormal eigenvectors</div>
+                            <p>For each eigenvalue λᵢ with multiplicity mᵢ:</p>
+                            <p>- Find a basis for the eigenspace (dimension = mᵢ)</p>
+                            <p>- Apply Gram-Schmidt to get orthonormal basis for this eigenspace</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 3: Combine all eigenvectors</div>
+                            <p>Collect all orthonormal eigenvectors from all eigenspaces.</p>
+                            <p>We get n orthonormal eigenvectors total (since sum of mᵢ = n).</p>
+                            <p>These are automatically orthogonal across different eigenspaces.</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 4: Form orthogonal matrix Q</div>
+                            <p>Let Q = [u₁ u₂ ... uₙ] where uᵢ are the orthonormal eigenvectors.</p>
+                            <p>Since columns are orthonormal, Q is orthogonal (QᵀQ = I).</p>
+                            <p>Let D = diag(λ₁, λ₂, ..., λₙ) with corresponding eigenvalues.</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 5: Verify diagonalization</div>
+                            <p>AQ = [Au₁ Au₂ ... Auₙ] = [λ₁u₁ λ₂u₂ ... λₙuₙ] = QD</p>
+                            <p>Multiply both sides by Qᵀ on the left:</p>
+                            <p>QᵀAQ = QᵀQD = D</p>
+                            <p>Therefore A = QDQᵀ</p>
+                        </div>
+                        <div class="step">
+                            <div class="step-label">Step 6: Conclusion</div>
+                            <p><span class="highlight">A is orthogonally diagonalizable. ∎</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 9: Quadratic Forms</h4>
+                    <p>For the quadratic form Q(x) = 3x₁² + 2x₁x₂ + 3x₂², find the matrix A such that Q(x) = xᵀAx and orthogonally diagonalize A.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 9:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Find matrix A</div>
+                        <p>Q(x) = xᵀAx where A is symmetric</p>
+                        <p>Q(x) = 3x₁² + 2x₁x₂ + 3x₂²</p>
+                        <p>= [x₁ x₂]\(\begin{pmatrix}a₁₁ & a₁₂ \\ a₂₁ & a₂₂\end{pmatrix}\)\(\begin{pmatrix}x₁ \\ x₂\end{pmatrix}\)</p>
+                        <p>Comparing coefficients:</p>
+                        <p>a₁₁ = 3, a₂₂ = 3, a₁₂ + a₂₁ = 2</p>
+                        <p>For symmetry: a₁₂ = a₂₁ = 1</p>
+                        <p>A = \(\begin{pmatrix}3 & 1 \\ 1 & 3\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Orthogonally diagonalize A</div>
+                        <p>From Question 6, we have:</p>
+                        <p>λ₁ = 4, u₁ = \(\begin{pmatrix}1/√2 \\ 1/√2\end{pmatrix}\)</p>
+                        <p>λ₂ = 2, u₂ = \(\begin{pmatrix}1/√2 \\ -1/√2\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Form Q and D</div>
+                        <p>Q = \(\begin{pmatrix}1/√2 & 1/√2 \\ 1/√2 & -1/√2\end{pmatrix}\)</p>
+                        <p>D = \(\begin{pmatrix}4 & 0 \\ 0 & 2\end{pmatrix}\)</p>
+                        <p><span class="highlight">A = QDQᵀ, so Q(x) = yᵀDy where y = Qᵀx</span></p>
+                        <p>In the new coordinates: Q(y) = 4y₁² + 2y₂²</p>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <h4>Question 10: Application - Principal Axes</h4>
+                    <p>Find the principal axes and classify the conic section 5x² + 4xy + 5y² = 18.</p>
+                </div>
+
+                <div class="solution-block">
+                    <h4>Solution 10:</h4>
+                    <div class="step">
+                        <div class="step-label">Step 1: Write in matrix form</div>
+                        <p>5x² + 4xy + 5y² = [x y]\(\begin{pmatrix}5 & 2 \\ 2 & 5\end{pmatrix}\)\(\begin{pmatrix}x \\ y\end{pmatrix}\)</p>
+                        <p>A = \(\begin{pmatrix}5 & 2 \\ 2 & 5\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 2: Find eigenvalues</div>
+                        <p>det(A - λI) = (5-λ)² - 4 = λ² - 10λ + 21 = (λ-7)(λ-3)</p>
+                        <p>λ₁ = 7, λ₂ = 3</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 3: Find principal axes (eigenvectors)</div>
+                        <p>For λ₁ = 7: v₁ = \(\begin{pmatrix}1 \\ 1\end{pmatrix}\), u₁ = \(\begin{pmatrix}1/√2 \\ 1/√2\end{pmatrix}\)</p>
+                        <p>For λ₂ = 3: v₂ = \(\begin{pmatrix}1 \\ -1\end{pmatrix}\), u₂ = \(\begin{pmatrix}1/√2 \\ -1/√2\end{pmatrix}\)</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 4: Change to principal axes coordinates</div>
+                        <p>Let \(\begin{pmatrix}x \\ y\end{pmatrix}\) = Q\(\begin{pmatrix}x' \\ y'\end{pmatrix}\) where Q = \(\begin{pmatrix}1/√2 & 1/√2 \\ 1/√2 & -1/√2\end{pmatrix}\)</p>
+                        <p>The equation becomes: 7(x')² + 3(y')² = 18</p>
+                        <p>Dividing by 18: (x')²/(18/7) + (y')²/6 = 1</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-label">Step 5: Classification</div>
+                        <p><span class="highlight">This is an ellipse with semi-major axis √6 along the y'-axis and semi-minor axis √(18/7) along the x'-axis</span></p>
+                        <p>Principal axes are rotated 45° from the original x-y axes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var solutions = document.querySelectorAll('.solution-block');
+            solutions.forEach(function (solution) {
+                solution.classList.add('hidden');
+
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.textContent = 'Show Solution';
+                button.style.display = 'inline-block';
+                button.style.margin = '10px 0';
+                button.style.padding = '10px 16px';
+                button.style.border = '2px solid var(--secondary-color)';
+                button.style.borderRadius = '8px';
+                button.style.background = 'white';
+                button.style.color = 'var(--primary-color)';
+                button.style.cursor = 'pointer';
+                button.style.fontWeight = '600';
+                button.style.transition = 'all 0.2s ease';
+
+                button.addEventListener('mouseenter', function () {
+                    button.style.background = 'var(--secondary-color)';
+                    button.style.color = 'white';
+                });
+                button.addEventListener('mouseleave', function () {
+                    button.style.background = 'white';
+                    button.style.color = 'var(--primary-color)';
+                });
+
+                button.addEventListener('click', function () {
+                    var isHidden = solution.classList.toggle('hidden');
+                    button.textContent = isHidden ? 'Show Solution' : 'Hide Solution';
+                });
+
+                solution.parentNode.insertBefore(button, solution);
+            });
+        });
+    </script>
+</body>
+</html>
